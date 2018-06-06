@@ -49,4 +49,4 @@ else
 ```
 
 #### License
-MiniProfiler is licensed under the [MIT license](https://github.com/StackExchange/StackExchange.Utils/blob/master/LICENSE.txt).
+StackExchange.Utils is licensed under the [MIT license](https://github.com/StackExchange/StackExchange.Utils/blob/master/LICENSE.txt).

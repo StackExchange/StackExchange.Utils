@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <RootNamespace>StackExchange.Utils</RootNamespace>
+    <OutputType>Library</OutputType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>embedded</DebugType>
+    <LangVersion>7.3</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <Authors>Stack Exchange</Authors>
+    <PackageId>$(AssemblyName)</PackageId>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/StackExchange/StackExchange.Utils</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.23" PrivateAssets="all" />
+    <PackageReference Include="SourceLink.Create.GitHub" Version="2.8.1" PrivateAssets="All" />
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.8.1" />
+    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.8.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>StackExchange.Utils.Http</AssemblyName>
+    <Description>HTTP Utility classes.</Description>
+    <PackageTags>http</PackageTags>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="Jil" Version="2.15.4" />
+    <PackageReference Include="protobuf-net" Version="2.3.7" />
+
+    <Compile Update="Extensions.*.cs" DependentUpon="Extensions.cs" />
+  </ItemGroup>
+</Project>

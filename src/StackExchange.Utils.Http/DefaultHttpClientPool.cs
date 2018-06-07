@@ -50,7 +50,10 @@ namespace StackExchange.Utils
                     }
                 }
             };
-            client.DefaultRequestHeaders.Add("User-Agent", Settings.UserAgent);
+            if (!string.IsNullOrEmpty(Settings.UserAgent))
+            {
+                client.DefaultRequestHeaders.Add("User-Agent", Settings.UserAgent);
+            }
             return client;
         }
 

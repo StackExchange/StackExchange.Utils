@@ -62,7 +62,7 @@ namespace StackExchange.Utils
                         // This isn't ideal cntrol flow behavior, but it's the only way to get proper stacks
                         if (!response.IsSuccessStatusCode && !builder.Inner.IgnoredResponseStatuses.Contains(response.StatusCode))
                         {
-                            exception = new HttpClientException($"Response code was {(int)response.StatusCode} ({response.StatusCode}) from {response.RequestMessage.RequestUri}: {response.ReasonPhrase}");
+                            exception = new HttpClientException($"Response code was {(int)response.StatusCode} ({response.StatusCode}) from {response.RequestMessage.RequestUri}: {response.ReasonPhrase}", response.StatusCode, response.RequestMessage.RequestUri);
                             stackTraceString.SetValue(exception, new StackTrace(true).ToString());
                         }
                         else
@@ -76,8 +76,8 @@ namespace StackExchange.Utils
             catch (TaskCanceledException ex)
             {
                 exception = cancellationToken.IsCancellationRequested
-                    ? new HttpClientException("HttpClient request cancelled by token request.", ex)
-                    : new HttpClientException("HttpClient request timed out. Timeout: " + builder.Inner.Timeout.TotalMilliseconds.ToString("N0") + "ms", ex);
+                    ? new HttpClientException("HttpClient request cancelled by token request.", builder.Inner.Message.RequestUri, ex)
+                    : new HttpClientException("HttpClient request timed out. Timeout: " + builder.Inner.Timeout.TotalMilliseconds.ToString("N0") + "ms", builder.Inner.Message.RequestUri, ex);
             }
             catch (Exception ex)
             {

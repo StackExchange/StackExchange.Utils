@@ -82,7 +82,7 @@ namespace StackExchange.Utils
         /// <returns>The created <see cref="HttpCallResponse{T}"/>.</returns>
         public static HttpCallResponse<T> Create<T>(HttpRequestMessage request, Exception error = null)
         {
-            error = (error ?? new HttpClientException("Failed to send request for " + request.RequestUri))
+            error = (error ?? new HttpClientException("Failed to send request for " + request.RequestUri, request.RequestUri))
                 // Add these regardless of source
                 .AddLoggedData("Request URI", request.RequestUri);
 

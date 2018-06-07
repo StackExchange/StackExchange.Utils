@@ -90,7 +90,7 @@ namespace StackExchange.Utils
                 }
                 catch (Exception e)
                 {
-                    var wrapper = new HttpClientException("Unable to set header: " + name + " to '" + value + "'", e);
+                    var wrapper = new HttpClientException("Unable to set header: " + name + " to '" + value + "'", builder.Message.RequestUri, e);
                     builder.GetSettings().OnException(builder, new HttpExceptionArgs(builder, wrapper));
                 }
             }
@@ -131,7 +131,7 @@ namespace StackExchange.Utils
                 }
                 catch (Exception e)
                 {
-                    var wrapper = new HttpClientException("Unable to set header: " + kv.Key + " to '" + kv.Value + "'", e);
+                    var wrapper = new HttpClientException("Unable to set header: " + kv.Key + " to '" + kv.Value + "'", builder.Message.RequestUri, e);
                     builder.GetSettings().OnException(builder, new HttpExceptionArgs(builder, wrapper));
                 }
             }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -70,43 +68,59 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public async Task BasicDelete()
         {
-            var guid = Guid.NewGuid().ToString();
             var result = await Http.Request("https://httpbin.org/delete")
-                                    .SendPlaintext(guid)
                                     .ExpectJson<HttpBinResponse>()
                                     .DeleteAsync();
             Assert.True(result.Success);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.True(result.Data.Form.ContainsKey(guid));
             Assert.Equal("https://httpbin.org/delete", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
 
-        private class HttpBinResponse
+        [Fact]
+        public async Task ErrorIgnores()
         {
-            [DataMember(Name = "args")]
-            public Dictionary<string, string> args { get; set; }
+            var settings = new HttpSettings();
+            var errorCount = 0;
+            settings.Exception += (_, __) => errorCount++;
 
-            [DataMember(Name = "data")]
-            public string Data { get; set; }
+            var result = await Http.Request("https://httpbin.org/satus/404", settings)
+                                   .ExpectHttpSuccess()
+                                   .GetAsync();
+            Assert.False(result.Success);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(1, errorCount);
 
-            [DataMember(Name = "files")]
-            public Dictionary<string, string> files { get; set; }
+            result = await Http.Request("https://httpbin.org/satus/404", settings)
+                               .WithoutLogging(HttpStatusCode.NotFound)
+                               .ExpectHttpSuccess()
+                               .GetAsync();
+            Assert.False(result.Success);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(1, errorCount); // didn't go up
 
-            [DataMember(Name = "form")]
-            public Dictionary<string, string> Form { get; set; }
+            result = await Http.Request("https://httpbin.org/satus/404", settings)
+                               .WithoutErrorLogging()
+                               .ExpectHttpSuccess()
+                               .GetAsync();
+            Assert.False(result.Success);
+            Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            Assert.Equal(1, errorCount); // didn't go up
+        }
 
-            [DataMember(Name = "headers")]
-            public Dictionary<string, string> Headers { get; set; }
-
-            [DataMember(Name = "json")]
-            public object JSON { get; set; }
-
-            [DataMember(Name = "origin")]
-            public string Origin { get; set; }
-
-            [DataMember(Name = "url")]
-            public string Url { get; set; }
+        [Fact]
+        public async Task Timeouts()
+        {
+            var result = await Http.Request("https://httpbin.org/delay/10")
+                                   .WithTimeout(TimeSpan.FromSeconds(1))
+                                   .ExpectHttpSuccess()
+                                   .GetAsync();
+            Assert.False(result.Success);
+            Assert.NotNull(result.Error);
+            Assert.Equal("HttpClient request timed out. Timeout: 1,000ms", result.Error.Message);
+            var err = Assert.IsType<HttpClientException>(result.Error);
+            Assert.Equal("https://httpbin.org/delay/10", err.Uri.ToString());
+            Assert.Null(err.StatusCode);
         }
     }
 }

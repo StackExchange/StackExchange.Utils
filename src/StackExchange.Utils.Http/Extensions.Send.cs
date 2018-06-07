@@ -41,6 +41,15 @@ namespace StackExchange.Utils
         public static IRequestBuilder SendHtml(this IRequestBuilder builder, string html) =>
             SendContent(builder, new StringContent(html, Encoding.UTF8, "text/html"));
 
+
+        /// <summary>
+        /// Adds JSON (Jil-serialized) content as the body for this request.
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="obj">The object to serialize as JSON in the body.</param>
+        /// <returns>The request builder for chaining.</returns>
+        public static IRequestBuilder SendJson(this IRequestBuilder builder, object obj) => SendJson(builder, obj, Options.Default);
+
         /// <summary>
         /// Adds JSON (Jil-serialized) content as the body for this request.
         /// </summary>
@@ -48,8 +57,8 @@ namespace StackExchange.Utils
         /// <param name="obj">The object to serialize as JSON in the body.</param>
         /// <param name="jsonOptions">The Jil options to use when serializing.</param>
         /// <returns>The request builder for chaining.</returns>
-        public static IRequestBuilder SendJson(this IRequestBuilder builder, object obj, Options jsonOptions = null) =>
-            SendContent(builder, new StringContent(JSON.Serialize(obj, jsonOptions ?? Options.Default), Encoding.UTF8, "application/json"));
+        public static IRequestBuilder SendJson(this IRequestBuilder builder, object obj, Options jsonOptions) =>
+            SendContent(builder, new StringContent(JSON.Serialize(obj, jsonOptions), Encoding.UTF8, "application/json"));
 
         /// <summary>
         /// Adds raw text content as the body for this request.

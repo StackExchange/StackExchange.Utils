@@ -49,9 +49,18 @@ namespace StackExchange.Utils
         /// </summary>
         /// <typeparam name="T">The type to Jil-deserialize to.</typeparam>
         /// <param name="builder">The builder we're working on.</param>
+        /// <returns>A typed request builder for chaining.</returns>
+        public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder) =>
+            builder.WithHandler(JsonHandler<T>.WithOptions(builder, null));
+
+        /// <summary>
+        /// Sets the response handler for this request to a JSON deserializer.
+        /// </summary>
+        /// <typeparam name="T">The type to Jil-deserialize to.</typeparam>
+        /// <param name="builder">The builder we're working on.</param>
         /// <param name="jsonOptions">The Jil options to use when serializing.</param>
         /// <returns>A typed request builder for chaining.</returns>
-        public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder, Options jsonOptions = null) =>
+        public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder, Options jsonOptions) =>
             builder.WithHandler(JsonHandler<T>.WithOptions(builder, jsonOptions));
 
         /// <summary>

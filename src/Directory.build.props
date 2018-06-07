@@ -11,8 +11,11 @@
 
     <Authors>Stack Exchange</Authors>
     <PackageId>$(AssemblyName)</PackageId>
+    <Copyright>Stack Exchange, Inc. 2018</Copyright>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/StackExchange/StackExchange.Utils</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/StackExchange/StackExchange.Utils</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>

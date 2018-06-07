@@ -11,7 +11,7 @@ namespace StackExchange.Utils
         /// <summary>
         /// The user agent to use on requests.
         /// </summary>
-        public string UserAgent { get; set; }
+        public string UserAgent { get; set; } = "StackExchange.Utils HttpClient";
 
         /// <summary>
         /// The prefix to use on .Data[key] calls with additional debug data.

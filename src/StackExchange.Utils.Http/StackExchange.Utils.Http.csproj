@@ -3,13 +3,18 @@
     <AssemblyName>StackExchange.Utils.Http</AssemblyName>
     <Description>HTTP Utility classes.</Description>
     <PackageTags>http</PackageTags>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup Condition="$(TargetFramework) == 'net462'">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Jil" Version="2.16.0" />
     <PackageReference Include="protobuf-net" Version="2.3.7" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
 
     <Compile Update="Extensions.*.cs" DependentUpon="Extensions.cs" />
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace StackExchange.Utils
         public HttpRequestMessage Message { get; }
         public bool LogErrors { get; set; } = true;
         public IEnumerable<HttpStatusCode> IgnoredResponseStatuses { get; set; } = Enumerable.Empty<HttpStatusCode>();
-        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3); // We've defaulted to 3 seconds since forever
+        public TimeSpan Timeout { get; set; }
         public event EventHandler<HttpExceptionArgs> BeforeExceptionLog;
         private readonly string _callerName, _callerFile;
         private readonly int _callerLine;
@@ -25,6 +25,7 @@ namespace StackExchange.Utils
                 RequestUri = new Uri(uri, UriKind.RelativeOrAbsolute)
             };
             Settings = settings;
+            Timeout = (settings ?? Http.DefaultSettings).DefaultTimeout;
             _callerName = callerName;
             _callerFile = callerFile;
             _callerLine = callerLine;

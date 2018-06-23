@@ -50,6 +50,11 @@ namespace StackExchange.Utils
         /// </summary>
         public IHttpClientPool ClientPool { get; set; }
 
+        /// <summary>
+        /// The default timeout to use for requests.
+        /// </summary>
+        public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
+
         internal void OnBeforeSend(object sender, IRequestBuilder builder) => BeforeSend?.Invoke(sender, builder);
         internal void OnException(object sender, HttpExceptionArgs args) => Exception?.Invoke(sender, args);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -122,5 +123,34 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("https://httpbin.org/delay/10", err.Uri.ToString());
             Assert.Null(err.StatusCode);
         }
+        
+        [Fact]
+        public async Task AddHeaderWithoutValidation()
+        {
+            var result = await Http.Request("https://httpbin.org/bearer")
+                                   .AddMessageHeaderWithoutValidation("Authorization","abcd")
+                                   .ExpectJson<HttpBinResponse>()
+                                   .GetAsync();
+            Assert.True(result.RawRequest.Headers.Contains("Authorization"));
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task AddHeaders()
+        {
+            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
+                .SendPlaintext("")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .ExpectString()
+                .PostAsync();
+            
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test,application/json", result.Data);
+        }
+        
     }
 }

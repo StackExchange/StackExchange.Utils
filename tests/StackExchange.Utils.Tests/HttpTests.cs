@@ -128,7 +128,7 @@ namespace StackExchange.Utils.Tests
         public async Task AddHeaderWithoutValidation()
         {
             var result = await Http.Request("https://httpbin.org/bearer")
-                                   .AddMessageHeaderWithoutValidation("Authorization","abcd")
+                                   .AddHeaderWithoutValidation("Authorization","abcd")
                                    .ExpectJson<HttpBinResponse>()
                                    .GetAsync();
             Assert.True(result.RawRequest.Headers.Contains("Authorization"));

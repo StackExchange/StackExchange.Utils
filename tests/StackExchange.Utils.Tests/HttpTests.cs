@@ -152,5 +152,37 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("Test,application/json", result.Data);
         }
         
+        [Fact]
+        public async Task TestAddHeadersWhereClientAddsHeaderBeforeContent()
+        {
+            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .SendJson("")
+                .ExpectString()
+                .PostAsync();
+            
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test,application/json; charset=utf-8", result.Data);
+        }
+        
+        [Fact]
+        public async Task TestAddHeadersWhereClientAddsHeaderAndNoContent()
+        {
+            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .ExpectString()
+                .GetAsync();
+            
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test,application/json", result.Data);
+        }
     }
 }

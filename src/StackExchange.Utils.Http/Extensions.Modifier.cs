@@ -133,7 +133,8 @@ namespace StackExchange.Utils
         public static IRequestBuilder AddHeaders(this IRequestBuilder builder, IDictionary<string, string> headers)
         {
             if (headers == null) return builder;
-
+            if (builder.Message.Content is null) builder.Message.Content = new StringContent("");
+      
             var pHeaders = builder.Message.Headers;
             foreach (var kv in headers)
             {

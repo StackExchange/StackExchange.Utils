@@ -184,5 +184,21 @@ namespace StackExchange.Utils.Tests
             Assert.Equal(HttpStatusCode.OK,result.StatusCode);
             Assert.Equal("Test,application/json", result.Data);
         }
+
+        [Fact]
+        public async Task PatchRequest()
+        {
+            var guid = Guid.NewGuid().ToString();
+            var result = await Http.Request("https://httpbin.org/patch")
+                .SendPlaintext(guid)
+                .ExpectJson<HttpBinResponse>()
+                .PatchAsync();
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result);
+            Assert.True(result.Data.Form.ContainsKey(guid));
+            Assert.Equal("https://httpbin.org/post", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
+        }
     }
 }

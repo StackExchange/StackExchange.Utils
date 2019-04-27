@@ -197,7 +197,7 @@ namespace StackExchange.Utils.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result);
             Assert.True(result.Data.Form.ContainsKey(guid));
-            Assert.Equal("https://httpbin.org/post", result.Data.Url);
+            Assert.Equal("https://httpbin.org/patch", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
     }

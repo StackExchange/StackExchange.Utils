@@ -5,4 +5,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/StackExchange.Utils.Http/StackExchange.Utils.Http.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+  </ItemGroup>
 </Project>

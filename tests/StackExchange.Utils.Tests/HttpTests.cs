@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -138,51 +139,53 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public async Task AddHeaders()
         {
-            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
-                .SendPlaintext("")
+            var result = await Http.Request("https://httpbin.org/headers")
                 .AddHeaders(new Dictionary<string, string>()
                 {
                     {"Content-Type", "application/json"},
                     {"Custom", "Test"}
                 })
-                .ExpectString()
-                .PostAsync();
+                .ExpectJson<HttpBinResponse>()
+                .GetAsync();
             
             Assert.Equal(HttpStatusCode.OK,result.StatusCode);
-            Assert.Equal("Test,application/json", result.Data);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            Assert.Equal("application/json", result.Data.Headers["Content-Type"]);
         }
         
         [Fact]
         public async Task TestAddHeadersWhereClientAddsHeaderBeforeContent()
         {
-            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
+            var result = await Http.Request("https://httpbin.org/headers")
                 .AddHeaders(new Dictionary<string, string>()
                 {
                     {"Content-Type", "application/json"},
                     {"Custom", "Test"}
                 })
                 .SendJson("")
-                .ExpectString()
-                .PostAsync();
+                .ExpectJson<HttpBinResponse>()
+                .GetAsync();
             
             Assert.Equal(HttpStatusCode.OK,result.StatusCode);
-            Assert.Equal("Test,application/json; charset=utf-8", result.Data);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            Assert.Equal("application/json; charset=utf-8", result.Data.Headers["Content-Type"]);
         }
         
         [Fact]
         public async Task TestAddHeadersWhereClientAddsHeaderAndNoContent()
         {
-            var result = await Http.Request("https://putsreq.com/xCU4o6HqMZzMnYECuBXa")
+            var result = await Http.Request("https://httpbin.org/headers")
                 .AddHeaders(new Dictionary<string, string>()
                 {
                     {"Content-Type", "application/json"},
                     {"Custom", "Test"}
                 })
-                .ExpectString()
+                .ExpectJson<HttpBinResponse>()
                 .GetAsync();
-            
+
             Assert.Equal(HttpStatusCode.OK,result.StatusCode);
-            Assert.Equal("Test,application/json", result.Data);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            Assert.Equal("application/json", result.Data.Headers["Content-Type"]);
         }
 
         [Fact]

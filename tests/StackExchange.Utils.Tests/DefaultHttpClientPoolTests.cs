@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace StackExchange.Utils.Tests
@@ -10,7 +8,6 @@ namespace StackExchange.Utils.Tests
     {
         private bool CompareHttpClientCacheKeys(IRequestBuilder one, IRequestBuilder two)
         {
-
             var t = typeof(DefaultHttpClientPool);
             var cacheKeyType = t.GetNestedType("HttpClientCacheKey", System.Reflection.BindingFlags.NonPublic);
             var oneCacheKey = Activator.CreateInstance(cacheKeyType, one.Timeout, one.Proxy);

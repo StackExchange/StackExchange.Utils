@@ -7,7 +7,7 @@ namespace StackExchange.Utils
     /// <summary>
     /// Settings for a Web Proxy to be used for requests
     /// </summary>
-    public class HttpProxySettings : IEquatable<HttpProxySettings>
+    public class HttpProxySettings : IEquatable<HttpProxySettings>, ICloneable
     {
         /// <summary>
         /// Should the Request use a Proxy?
@@ -18,6 +18,13 @@ namespace StackExchange.Utils
         /// The Proxy to use for the Request
         /// </summary>
         public IWebProxy Proxy { get; set; }
+
+        object ICloneable.Clone()
+            => new HttpProxySettings
+            {
+                UseProxy = UseProxy,
+                Proxy = Proxy
+            };
 
         /// <see cref="object.Equals(object)"/>
         public override bool Equals(object obj)

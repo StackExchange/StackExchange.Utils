@@ -26,7 +26,7 @@ namespace StackExchange.Utils
         /// </summary>
         /// <param name="builder">The builder to get a request from.</param>
         /// <returns>The found or created <see cref="HttpClient"/> from the pool.</returns>
-        public HttpClient Get(IRequestBuilder builder) => ClientPool.GetOrAdd(new HttpClientCacheKey(builder.Timeout, (builder.Settings ?? Http.DefaultSettings)?.Proxy), CreateHttpClient);
+        public HttpClient Get(IRequestBuilder builder) => ClientPool.GetOrAdd(new HttpClientCacheKey(builder.Timeout, builder.Proxy), CreateHttpClient);
 
         private HttpClient CreateHttpClient(HttpClientCacheKey options)
         {

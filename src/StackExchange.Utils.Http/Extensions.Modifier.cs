@@ -10,6 +10,22 @@ namespace StackExchange.Utils
     public static partial class ExtensionsForHttp
     {
         /// <summary>
+        /// Sets a proxy for this request.
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="proxy">The proxy to use on this request.</param>
+        /// <returns>The request builder for chaining.</returns>
+        /// <remarks>
+        /// This isn't *really* per request since it's global on <see cref="System.Net.Http.HttpClient"/>,
+        /// so in reality we grab a different client from the pool.
+        /// </remarks>
+        public static IRequestBuilder WithProxy(this IRequestBuilder builder, HttpProxySettings proxy)
+        {
+            builder.Proxy = proxy;
+            return builder;
+        }
+
+        /// <summary>
         /// Sets a timeout for this request.
         /// </summary>
         /// <param name="builder">The builder we're working on.</param>

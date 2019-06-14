@@ -26,7 +26,6 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public void HttpClientCacheKeyEquality_SameTimeout_True()
         {
-
             var rbOneWithTimeout = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10));
             var rbTwoWithTimeout = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10));
             Assert.True(CompareHttpClientCacheKeys(rbOneWithTimeout, rbTwoWithTimeout));
@@ -35,7 +34,6 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public void HttpClientCacheKeyEquality_DifferentTimeout_False()
         {
-
             var rbOneWithTimeout = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10));
             var rbTwoWithTimeout = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(20));
             Assert.False(CompareHttpClientCacheKeys(rbOneWithTimeout, rbTwoWithTimeout));

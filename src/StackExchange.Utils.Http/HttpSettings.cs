@@ -55,6 +55,11 @@ namespace StackExchange.Utils
         /// </summary>
         public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
+        /// <summary>
+        /// The Proxy to use when making requests
+        /// </summary>
+        public HttpProxySettings Proxy { get; set; } = new HttpProxySettings();
+
         internal void OnBeforeSend(object sender, IRequestBuilder builder) => BeforeSend?.Invoke(sender, builder);
         internal void OnException(object sender, HttpExceptionArgs args) => Exception?.Invoke(sender, args);
 

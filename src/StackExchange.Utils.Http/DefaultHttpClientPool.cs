@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,7 +26,7 @@ namespace StackExchange.Utils
         /// </summary>
         /// <param name="builder">The builder to get a request from.</param>
         /// <returns>The found or created <see cref="HttpClient"/> from the pool.</returns>
-        public HttpClient Get(IRequestBuilder builder) => ClientPool.GetOrAdd(new HttpClientCacheKey(builder.Timeout), CreateHttpClient);
+        public HttpClient Get(IRequestBuilder builder) => ClientPool.GetOrAdd(new HttpClientCacheKey(builder.Timeout, (builder.Settings ?? Http.DefaultSettings)?.Proxy), CreateHttpClient);
 
         private HttpClient CreateHttpClient(HttpClientCacheKey options)
         {
@@ -33,6 +34,12 @@ namespace StackExchange.Utils
             {
                 UseCookies = false
             };
+            if (options.Proxy != null)
+            {
+                handler.UseProxy = options.Proxy.UseProxy;
+                handler.Proxy = options.Proxy.Proxy;
+            }
+
             if (handler.SupportsAutomaticDecompression)
             {
                 handler.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
@@ -62,11 +69,45 @@ namespace StackExchange.Utils
         /// </summary>
         public void Clear() => ClientPool.Clear();
 
-        private struct HttpClientCacheKey
+        private struct HttpClientCacheKey : IEquatable<HttpClientCacheKey>
         {
             public TimeSpan Timeout { get; }
+            public HttpProxySettings Proxy { get; }
 
-            public HttpClientCacheKey(TimeSpan timeout) => Timeout = timeout;
+            public HttpClientCacheKey(TimeSpan timeout, HttpProxySettings proxy)
+            {
+                Timeout = timeout;
+                Proxy = proxy;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is HttpClientCacheKey key && Equals(key);
+            }
+
+            public bool Equals(HttpClientCacheKey other)
+            {
+                return Timeout.Equals(other.Timeout) &&
+                       EqualityComparer<HttpProxySettings>.Default.Equals(Proxy, other.Proxy);
+            }
+
+            public override int GetHashCode()
+            {
+                var hashCode = 647927907;
+                hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(Timeout);
+                hashCode = hashCode * -1521134295 + EqualityComparer<HttpProxySettings>.Default.GetHashCode(Proxy);
+                return hashCode;
+            }
+
+            public static bool operator ==(HttpClientCacheKey left, HttpClientCacheKey right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(HttpClientCacheKey left, HttpClientCacheKey right)
+            {
+                return !(left == right);
+            }
         }
     }
 }

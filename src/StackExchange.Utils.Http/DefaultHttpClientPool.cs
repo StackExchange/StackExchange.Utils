@@ -81,15 +81,11 @@ namespace StackExchange.Utils
             }
 
             public override bool Equals(object obj)
-            {
-                return obj is HttpClientCacheKey key && Equals(key);
-            }
+                => obj is HttpClientCacheKey key && Equals(key);
 
             public bool Equals(HttpClientCacheKey other)
-            {
-                return Timeout.Equals(other.Timeout) &&
-                       EqualityComparer<IWebProxy>.Default.Equals(Proxy, other.Proxy);
-            }
+                => Timeout.Equals(other.Timeout)
+                    && EqualityComparer<IWebProxy>.Default.Equals(Proxy, other.Proxy);
 
             public override int GetHashCode()
             {
@@ -100,14 +96,10 @@ namespace StackExchange.Utils
             }
 
             public static bool operator ==(HttpClientCacheKey left, HttpClientCacheKey right)
-            {
-                return left.Equals(right);
-            }
+                => left.Equals(right);
 
             public static bool operator !=(HttpClientCacheKey left, HttpClientCacheKey right)
-            {
-                return !(left == right);
-            }
+                => !(left == right);
         }
     }
 }

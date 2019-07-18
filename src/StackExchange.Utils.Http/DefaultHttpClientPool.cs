@@ -36,7 +36,7 @@ namespace StackExchange.Utils
             };
             if (options.Proxy != null)
             {
-                handler.UseProxy = options.Proxy != null;
+                handler.UseProxy = true;
                 handler.Proxy = options.Proxy;
             }
 

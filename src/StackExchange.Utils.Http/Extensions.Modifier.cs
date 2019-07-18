@@ -19,7 +19,7 @@ namespace StackExchange.Utils
         /// This isn't *really* per request since it's global on <see cref="System.Net.Http.HttpClient"/>,
         /// so in reality we grab a different client from the pool.
         /// </remarks>
-        public static IRequestBuilder WithProxy(this IRequestBuilder builder, HttpProxySettings proxy)
+        public static IRequestBuilder WithProxy(this IRequestBuilder builder, IWebProxy proxy)
         {
             builder.Proxy = proxy;
             return builder;

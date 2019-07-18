@@ -42,16 +42,16 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public void HttpClientCacheKeyEquality_SameUseProxy_True()
         {
-            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { UseProxy = true });
-            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { UseProxy = true });
+            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(WebRequest.GetSystemWebProxy());
+            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(WebRequest.GetSystemWebProxy());
             Assert.True(CompareHttpClientCacheKeys(rbOneWithProxy, rbTwoWithProxy));
         }
 
         [Fact]
         public void HttpClientCacheKeyEquality_DifferentUseProxy_False()
         {
-            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { UseProxy = true });
-            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { UseProxy = false });
+            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(null);
+            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(WebRequest.GetSystemWebProxy());
             Assert.False(CompareHttpClientCacheKeys(rbOneWithProxy, rbTwoWithProxy));
         }
 
@@ -59,8 +59,8 @@ namespace StackExchange.Utils.Tests
         public void HttpClientCacheKeyEquality_SameProxyInstances_True()
         {
             var proxy = new WebProxy();
-            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { Proxy = proxy });
-            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { Proxy = proxy });
+            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(proxy);
+            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(proxy);
             Assert.True(CompareHttpClientCacheKeys(rbOneWithProxy, rbTwoWithProxy));
         }
 
@@ -68,16 +68,16 @@ namespace StackExchange.Utils.Tests
         public void HttpClientCacheKeyEquality_DifferentProxyInstances_False()
         {
             // WebProxy uses Reference Equality
-            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { Proxy = new WebProxy() });
-            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(new HttpProxySettings { Proxy = new WebProxy() });
+            var rbOneWithProxy = Http.Request("http://example.com").WithProxy(new WebProxy());
+            var rbTwoWithProxy = Http.Request("http://example.com").WithProxy(new WebProxy());
             Assert.False(CompareHttpClientCacheKeys(rbOneWithProxy, rbTwoWithProxy));
         }
 
         [Fact]
         public void HttpClientCacheKeyEquality_SameTimeoutAndUseProxy_True()
         {
-            var rbOneWithTimeoutAndProxy = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10)).WithProxy(new HttpProxySettings { UseProxy = true });
-            var rbTwoWithTimeoutAndProxy = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10)).WithProxy(new HttpProxySettings { UseProxy = true });
+            var rbOneWithTimeoutAndProxy = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10)).WithProxy(WebRequest.GetSystemWebProxy());
+            var rbTwoWithTimeoutAndProxy = Http.Request("http://example.com").WithTimeout(TimeSpan.FromSeconds(10)).WithProxy(WebRequest.GetSystemWebProxy());
             Assert.True(CompareHttpClientCacheKeys(rbOneWithTimeoutAndProxy, rbTwoWithTimeoutAndProxy));
         }
     }

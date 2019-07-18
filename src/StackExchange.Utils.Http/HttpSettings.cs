@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 
 namespace StackExchange.Utils
@@ -56,9 +57,14 @@ namespace StackExchange.Utils
         public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <summary>
-        /// The default Proxy to use when making requests
+        /// The default Proxy to use when making requests.
+        /// 
+        /// This should create a new instance of a proxy when called,
+        /// so that modifications don't affect the default (e.g.,
+        /// changing Proxy.Credentials on a builder.Proxy should
+        /// not affect the Proxy.Credentials used by default)
         /// </summary>
-        public HttpProxySettings DefaultProxy { get; set; } = new HttpProxySettings();
+        public Func<IWebProxy> DefaultProxyFactory { get; set; } = null;
 
         internal void OnBeforeSend(object sender, IRequestBuilder builder) => BeforeSend?.Invoke(sender, builder);
         internal void OnException(object sender, HttpExceptionArgs args) => Exception?.Invoke(sender, args);

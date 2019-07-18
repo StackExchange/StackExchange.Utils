@@ -45,7 +45,7 @@ namespace StackExchange.Utils
         /// The Proxy to use when making requests
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        HttpProxySettings Proxy { get; set; }
+        IWebProxy Proxy { get; set; }
 
         /// <summary>
         /// An before-logging event to call in case on an error.

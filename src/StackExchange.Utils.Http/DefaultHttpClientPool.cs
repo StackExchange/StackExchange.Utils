@@ -36,8 +36,8 @@ namespace StackExchange.Utils
             };
             if (options.Proxy != null)
             {
-                handler.UseProxy = options.Proxy.UseProxy;
-                handler.Proxy = options.Proxy.Proxy;
+                handler.UseProxy = options.Proxy != null;
+                handler.Proxy = options.Proxy;
             }
 
             if (handler.SupportsAutomaticDecompression)
@@ -72,9 +72,9 @@ namespace StackExchange.Utils
         private struct HttpClientCacheKey : IEquatable<HttpClientCacheKey>
         {
             public TimeSpan Timeout { get; }
-            public HttpProxySettings Proxy { get; }
+            public IWebProxy Proxy { get; }
 
-            public HttpClientCacheKey(TimeSpan timeout, HttpProxySettings proxy)
+            public HttpClientCacheKey(TimeSpan timeout, IWebProxy proxy)
             {
                 Timeout = timeout;
                 Proxy = proxy;
@@ -88,14 +88,14 @@ namespace StackExchange.Utils
             public bool Equals(HttpClientCacheKey other)
             {
                 return Timeout.Equals(other.Timeout) &&
-                       EqualityComparer<HttpProxySettings>.Default.Equals(Proxy, other.Proxy);
+                       EqualityComparer<IWebProxy>.Default.Equals(Proxy, other.Proxy);
             }
 
             public override int GetHashCode()
             {
                 var hashCode = 647927907;
                 hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(Timeout);
-                hashCode = hashCode * -1521134295 + EqualityComparer<HttpProxySettings>.Default.GetHashCode(Proxy);
+                hashCode = hashCode * -1521134295 + EqualityComparer<IWebProxy>.Default.GetHashCode(Proxy);
                 return hashCode;
             }
 

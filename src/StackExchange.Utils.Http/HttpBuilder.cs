@@ -14,7 +14,7 @@ namespace StackExchange.Utils
         public bool LogErrors { get; set; } = true;
         public IEnumerable<HttpStatusCode> IgnoredResponseStatuses { get; set; } = Enumerable.Empty<HttpStatusCode>();
         public TimeSpan Timeout { get; set; }
-        public HttpProxySettings Proxy { get; set; }
+        public IWebProxy Proxy { get; set; }
         public event EventHandler<HttpExceptionArgs> BeforeExceptionLog;
         private readonly string _callerName, _callerFile;
         private readonly int _callerLine;
@@ -27,7 +27,7 @@ namespace StackExchange.Utils
             };
             Settings = settings;
             Timeout = (settings ?? Http.DefaultSettings).DefaultTimeout;
-            Proxy = ((ICloneable)(settings ?? Http.DefaultSettings).DefaultProxy).Clone() as HttpProxySettings;
+            Proxy = (settings ?? Http.DefaultSettings).DefaultProxyFactory?.Invoke();
             _callerName = callerName;
             _callerFile = callerFile;
             _callerLine = callerLine;

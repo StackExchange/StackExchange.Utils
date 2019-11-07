@@ -55,8 +55,10 @@ namespace StackExchange.Utils
                 using (settings.ProfileRequest?.Invoke(request))
                 using (request)
                 {
+                    // Get the pool
+                    var pool = builder.Inner.ClientPool ?? settings.ClientPool;
                     // Send the request
-                    using (response = await settings.ClientPool.Get(builder.Inner).SendAsync(request, cancellationToken))
+                    using (response = await pool.Get(builder.Inner).SendAsync(request, cancellationToken))
                     {
                         // If we haven't ignored it, throw and we'll log below
                         // This isn't ideal cntrol flow behavior, but it's the only way to get proper stacks

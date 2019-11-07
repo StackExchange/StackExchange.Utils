@@ -26,6 +26,18 @@ namespace StackExchange.Utils
         }
 
         /// <summary>
+        /// Sets an <see cref="IHttpClientPool"/> to get a client from for this request.
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="pool">The pool to use on this request (defaults to global settings otherwise).</param>
+        /// <returns>The request builder for chaining.</returns>
+        public static IRequestBuilder WithClientPool(this IRequestBuilder builder, IHttpClientPool pool)
+        {
+            builder.ClientPool = pool;
+            return builder;
+        }
+
+        /// <summary>
         /// Sets a timeout for this request.
         /// </summary>
         /// <param name="builder">The builder we're working on.</param>

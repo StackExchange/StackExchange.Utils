@@ -48,6 +48,12 @@ namespace StackExchange.Utils
         IWebProxy Proxy { get; set; }
 
         /// <summary>
+        /// The <see cref="IHttpClientPool"/> to get a client from.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        IHttpClientPool ClientPool { get; set; }
+
+        /// <summary>
         /// An before-logging event to call in case on an error.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

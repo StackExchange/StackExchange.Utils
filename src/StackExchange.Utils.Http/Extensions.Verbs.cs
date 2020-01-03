@@ -45,5 +45,15 @@ namespace StackExchange.Utils
         /// <returns>A <see cref="HttpCallResponse{T}"/> to consume.</returns>
         public static Task<HttpCallResponse<T>> PutAsync<T>(this IRequestBuilder<T> builder, CancellationToken cancellationToken = default) =>
             Http.SendAsync(builder, HttpMethod.Put, cancellationToken);
+            
+        /// <summary>
+        /// Issue the request as a PATCH.
+        /// </summary>
+        /// <typeparam name="T">The return type.</typeparam>
+        /// <param name="builder">The builder used for this request.</param>
+        /// <param name="cancellationToken">The cancellation token for stopping the request.</param>
+        /// <returns>A <see cref="HttpCallResponse{T}"/> to consume.</returns>
+        public static Task<HttpCallResponse<T>> PatchAsync<T>(this IRequestBuilder<T> builder, CancellationToken cancellationToken = default) =>
+            Http.SendAsync(builder, new HttpMethod("PATCH"), cancellationToken);
     }
 }

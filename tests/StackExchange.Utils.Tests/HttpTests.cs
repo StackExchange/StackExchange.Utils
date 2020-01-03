@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -121,6 +123,89 @@ namespace StackExchange.Utils.Tests
             var err = Assert.IsType<HttpClientException>(result.Error);
             Assert.Equal("https://httpbin.org/delay/10", err.Uri.ToString());
             Assert.Null(err.StatusCode);
+        }
+        
+        [Fact]
+        public async Task AddHeaderWithoutValidation()
+        {
+            var result = await Http.Request("https://httpbin.org/bearer")
+                                   .AddHeaderWithoutValidation("Authorization","abcd")
+                                   .ExpectJson<HttpBinResponse>()
+                                   .GetAsync();
+            Assert.True(result.RawRequest.Headers.Contains("Authorization"));
+            Assert.Equal(HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task AddHeaders()
+        {
+            var result = await Http.Request("https://httpbin.org/headers")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .SendJson("{}")
+                .ExpectJson<HttpBinResponse>()
+                .GetAsync();
+
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            // Content-Type should be present because we're sending a body up
+            Assert.StartsWith("application/json", result.Data.Headers["Content-Type"]);
+        }
+
+        [Fact]
+        public async Task TestAddHeadersWhereClientAddsHeaderBeforeContent()
+        {
+            var result = await Http.Request("https://httpbin.org/headers")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .SendJson("")
+                .ExpectJson<HttpBinResponse>()
+                .GetAsync();
+
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            Assert.Equal("application/json; charset=utf-8", result.Data.Headers["Content-Type"]);
+        }
+
+        [Fact]
+        public async Task TestAddHeadersWhereClientAddsHeaderAndNoContent()
+        {
+            var result = await Http.Request("https://httpbin.org/headers")
+                .AddHeaders(new Dictionary<string, string>()
+                {
+                    {"Content-Type", "application/json"},
+                    {"Custom", "Test"}
+                })
+                .ExpectJson<HttpBinResponse>()
+                .GetAsync();
+
+            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal("Test", result.Data.Headers["Custom"]);
+            // Content-Type is NOT sent when there's no body - this is correct behavior
+            Assert.DoesNotContain("Content-Type", result.Data.Headers.Keys);
+        }
+
+        [Fact]
+        public async Task PatchRequest()
+        {
+            var guid = Guid.NewGuid().ToString();
+            var result = await Http.Request("https://httpbin.org/patch")
+                .SendPlaintext(guid)
+                .ExpectJson<HttpBinResponse>()
+                .PatchAsync();
+
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result);
+            Assert.True(result.Data.Form.ContainsKey(guid));
+            Assert.Equal("https://httpbin.org/patch", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
     }
 }

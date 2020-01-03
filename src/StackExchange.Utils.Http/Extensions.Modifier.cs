@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace StackExchange.Utils
@@ -119,6 +120,32 @@ namespace StackExchange.Utils
                 catch (Exception e)
                 {
                     var wrapper = new HttpClientException("Unable to set header: " + name + " to '" + value + "'", builder.Message.RequestUri, e);
+                    builder.GetSettings().OnException(builder, new HttpExceptionArgs(builder, wrapper));
+                }
+            }
+            return builder;
+        }
+        
+        /// <summary>
+        /// Adds a single header without Validation against known Header types.
+        /// (ideal if you have different interpretation to the spec for any known types)
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="name">The auth scheme to add to this request.</param>
+        /// <param name="value">The key value (for <paramref name="name"/>) to add to this request.</param>
+        /// <returns>The request builder for chaining.</returns>
+        public static IRequestBuilder AddHeaderWithoutValidation(this IRequestBuilder builder, string name, string value)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                try
+                {
+                    builder.Message.Headers.TryAddWithoutValidation(name, value);
+
+                }
+                catch (Exception e)
+                {
+                    var wrapper = new HttpClientException("Unable to set header using: " + name + " to '" + value + "'", builder.Message.RequestUri, e);
                     builder.GetSettings().OnException(builder, new HttpExceptionArgs(builder, wrapper));
                 }
             }

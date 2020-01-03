@@ -42,6 +42,18 @@ namespace StackExchange.Utils
         TimeSpan Timeout { get; set; }
 
         /// <summary>
+        /// The Proxy to use when making requests
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        IWebProxy Proxy { get; set; }
+
+        /// <summary>
+        /// The <see cref="IHttpClientPool"/> to get a client from.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        IHttpClientPool ClientPool { get; set; }
+
+        /// <summary>
         /// An before-logging event to call in case on an error.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

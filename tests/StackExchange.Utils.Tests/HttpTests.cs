@@ -199,6 +199,7 @@ namespace StackExchange.Utils.Tests
                 .SendPlaintext(guid)
                 .ExpectJson<HttpBinResponse>()
                 .PatchAsync();
+
             Assert.True(result.Success);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result);

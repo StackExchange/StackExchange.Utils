@@ -57,12 +57,13 @@ namespace StackExchange.Utils
         public TimeSpan DefaultTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <summary>
-        /// The default Proxy to use when making requests.
-        /// 
+        /// <para>The default Proxy to use when making requests.</para>
+        /// <para>
         /// This should create a new instance of a proxy when called,
         /// so that modifications don't affect the default (e.g.,
         /// changing Proxy.Credentials on a builder.Proxy should
         /// not affect the Proxy.Credentials used by default)
+        /// </para>
         /// </summary>
         public Func<IWebProxy> DefaultProxyFactory { get; set; } = null;
 

@@ -86,15 +86,10 @@ namespace StackExchange.Utils
                 exception = ex;
             }
 
-            var result = default(HttpCallResponse<T>);
-            if (response == null)
-            {
-                result = HttpCallResponse.Create<T>(request, exception);
-            }
-            else
-            {
-                result = HttpCallResponse.Create<T>(response, exception);
-            }
+            // Use the response if we have it - request if not
+            var result = response != null
+                ? HttpCallResponse.Create<T>(response, exception)
+                : HttpCallResponse.Create<T>(request, exception);
 
             // Add caller member bits to the exception data regardless of where it's eventually logged.
             (builder.Inner as HttpBuilder)?.AddExceptionData(exception);

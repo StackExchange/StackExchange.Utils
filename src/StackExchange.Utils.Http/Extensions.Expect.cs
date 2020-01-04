@@ -18,9 +18,8 @@ namespace StackExchange.Utils
             builder.WithHandler(responseMessage => Task.FromResult(responseMessage.IsSuccessStatusCode));
 
         /// <summary>
-        /// Holds handlers for ExpectJson(T) calls, so we don't re-create them in the common "default Options" case.
-        ///
-        /// Without this, we create a new Func for each ExpectJson call even
+        /// <para>Holds handlers for ExpectJson(T) calls, so we don't re-create them in the common "default Options" case.</para>
+        /// <para>Without this, we create a new Func for each ExpectJson call even</para>
         /// </summary>
         /// <typeparam name="T">The type being deserialized.</typeparam>
         private static class JsonHandler<T>

@@ -90,8 +90,8 @@ namespace StackExchange.Utils
             public override int GetHashCode()
             {
                 var hashCode = 647927907;
-                hashCode = hashCode * -1521134295 + EqualityComparer<TimeSpan>.Default.GetHashCode(Timeout);
-                hashCode = hashCode * -1521134295 + EqualityComparer<IWebProxy>.Default.GetHashCode(Proxy);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<TimeSpan>.Default.GetHashCode(Timeout);
+                hashCode = (hashCode * -1521134295) + EqualityComparer<IWebProxy>.Default.GetHashCode(Proxy);
                 return hashCode;
             }
 

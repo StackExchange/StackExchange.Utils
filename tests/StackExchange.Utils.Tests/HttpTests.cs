@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -25,7 +24,6 @@ namespace StackExchange.Utils.Tests
         [Fact]
         public async Task BasicGet()
         {
-            var guid = Guid.NewGuid().ToString();
             var result = await Http.Request("https://httpbin.org/get")
                                     .ExpectJson<HttpBinResponse>()
                                     .GetAsync();
@@ -124,7 +122,7 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("https://httpbin.org/delay/10", err.Uri.ToString());
             Assert.Null(err.StatusCode);
         }
-        
+
         [Fact]
         public async Task AddHeaderWithoutValidation()
         {

@@ -78,6 +78,7 @@ namespace StackExchange.Utils
         }
 
         private static readonly ConcurrentDictionary<HttpStatusCode, ImmutableHashSet<HttpStatusCode>> _ignoreCache = new ConcurrentDictionary<HttpStatusCode, ImmutableHashSet<HttpStatusCode>>();
+
         /// <summary>
         /// Doesn't log an error when the response's HTTP status code is <paramref name="ignoredStatusCode"/>.
         /// </summary>
@@ -125,7 +126,7 @@ namespace StackExchange.Utils
             }
             return builder;
         }
-        
+
         /// <summary>
         /// Adds a single header without Validation against known Header types.
         /// (ideal if you have different interpretation to the spec for any known types)
@@ -141,7 +142,6 @@ namespace StackExchange.Utils
                 try
                 {
                     builder.Message.Headers.TryAddWithoutValidation(name, value);
-
                 }
                 catch (Exception e)
                 {

@@ -3,16 +3,17 @@ using System.Runtime.Serialization;
 
 namespace StackExchange.Utils.Tests
 {
+    [DataContract]
     public class HttpBinResponse
     {
         [DataMember(Name = "args")]
-        public Dictionary<string, string> args { get; set; }
+        public Dictionary<string, string> Args { get; set; }
 
         [DataMember(Name = "data")]
         public string Data { get; set; }
 
         [DataMember(Name = "files")]
-        public Dictionary<string, string> files { get; set; }
+        public Dictionary<string, string> Files { get; set; }
 
         [DataMember(Name = "form")]
         public Dictionary<string, string> Form { get; set; }

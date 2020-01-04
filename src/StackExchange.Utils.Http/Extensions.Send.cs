@@ -41,7 +41,6 @@ namespace StackExchange.Utils
         public static IRequestBuilder SendHtml(this IRequestBuilder builder, string html) =>
             SendContent(builder, new StringContent(html, Encoding.UTF8, "text/html"));
 
-
         /// <summary>
         /// Adds JSON (Jil-serialized) content as the body for this request.
         /// </summary>

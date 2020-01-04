@@ -45,7 +45,7 @@ namespace StackExchange.Utils
         /// <returns>A <see cref="HttpCallResponse{T}"/> to consume.</returns>
         public static Task<HttpCallResponse<T>> PutAsync<T>(this IRequestBuilder<T> builder, CancellationToken cancellationToken = default) =>
             Http.SendAsync(builder, HttpMethod.Put, cancellationToken);
-            
+
         /// <summary>
         /// Issue the request as a PATCH.
         /// </summary>

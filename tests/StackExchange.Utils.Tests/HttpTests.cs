@@ -22,6 +22,18 @@ namespace StackExchange.Utils.Tests
         }
 
         [Fact]
+        public async Task BasicDelete()
+        {
+            var result = await Http.Request("https://httpbin.org/delete")
+                                    .ExpectJson<HttpBinResponse>()
+                                    .DeleteAsync();
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("https://httpbin.org/delete", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
+        }
+
+        [Fact]
         public async Task BasicGet()
         {
             var result = await Http.Request("https://httpbin.org/get")
@@ -31,6 +43,21 @@ namespace StackExchange.Utils.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.NotNull(result);
             Assert.Equal("https://httpbin.org/get", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
+        }
+
+        [Fact]
+        public async Task BasicHead()
+        {
+            var guid = Guid.NewGuid().ToString();
+            var result = await Http.Request("https://httpbin.org/anything")
+                                    .SendPlaintext(guid)
+                                    .ExpectJson<HttpBinResponse>()
+                                    .PutAsync();
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.True(result.Data.Form.ContainsKey(guid));
+            Assert.Equal("https://httpbin.org/anything", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
 
@@ -62,18 +89,6 @@ namespace StackExchange.Utils.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.True(result.Data.Form.ContainsKey(guid));
             Assert.Equal("https://httpbin.org/put", result.Data.Url);
-            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
-        }
-
-        [Fact]
-        public async Task BasicDelete()
-        {
-            var result = await Http.Request("https://httpbin.org/delete")
-                                    .ExpectJson<HttpBinResponse>()
-                                    .DeleteAsync();
-            Assert.True(result.Success);
-            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
-            Assert.Equal("https://httpbin.org/delete", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
 

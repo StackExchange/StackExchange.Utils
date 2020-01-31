@@ -27,6 +27,16 @@ namespace StackExchange.Utils
             Http.SendAsync(builder, HttpMethod.Get, cancellationToken);
 
         /// <summary>
+        /// Issue the request as a HEAD.
+        /// </summary>
+        /// <typeparam name="T">The return type.</typeparam>
+        /// <param name="builder">The builder used for this request.</param>
+        /// <param name="cancellationToken">The cancellation token for stopping the request.</param>
+        /// <returns>A <see cref="HttpCallResponse{T}"/> to consume.</returns>
+        public static Task<HttpCallResponse<T>> HeadAsync<T>(this IRequestBuilder<T> builder, CancellationToken cancellationToken = default) =>
+            Http.SendAsync(builder, HttpMethod.Head, cancellationToken);
+
+        /// <summary>
         /// Issue the request as a POST.
         /// </summary>
         /// <typeparam name="T">The return type.</typeparam>

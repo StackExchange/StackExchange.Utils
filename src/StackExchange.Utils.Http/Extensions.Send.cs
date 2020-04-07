@@ -29,9 +29,16 @@ namespace StackExchange.Utils
         /// <param name="builder">The builder we're working on.</param>
         /// <param name="form">The <see cref="NameValueCollection"/> (e.g. FormCollection) to use.</param>
         /// <returns>The request builder for chaining.</returns>
-        public static IRequestBuilder SendForm(this IRequestBuilder builder, NameValueCollection form) =>
-            SendContent(builder, new FormUrlEncodedContent(form.AllKeys.ToDictionary(k => k, v => form[v])));
-
+        public static IRequestBuilder SendForm(this IRequestBuilder builder, NameValueCollection form)
+        {
+            var content = new MultipartFormDataContent();
+            foreach(var formKey in form.AllKeys)
+            {                
+                content.Add(new StringContent(form[formKey]), formKey);
+            }
+            return SendContent(builder, content);
+        }
+            
         /// <summary>
         /// Adds raw HTML content as the body for this request.
         /// </summary>

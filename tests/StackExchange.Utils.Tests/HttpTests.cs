@@ -239,6 +239,9 @@ namespace StackExchange.Utils.Tests
 
             Assert.True(result.Success);
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result);
+            Assert.Equal("https://httpbin.org/post", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
     }
 }

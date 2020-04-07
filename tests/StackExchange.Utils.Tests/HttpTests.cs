@@ -220,5 +220,28 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("https://httpbin.org/patch", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
+
+        [Fact]
+        public async Task LargePost()
+        {
+            // 5MB string
+            var myString = new string('*', 1048576 * 5);
+
+            var form = new System.Collections.Specialized.NameValueCollection
+            {                
+                ["requestsJson"] = myString
+            };
+
+            var result = await Http.Request("https://httpbin.org/post")
+                .SendForm(form)
+                .ExpectJson<HttpBinResponse>()
+                .PostAsync();
+
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            Assert.NotNull(result);
+            Assert.Equal("https://httpbin.org/post", result.Data.Url);
+            Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
+        }
     }
 }

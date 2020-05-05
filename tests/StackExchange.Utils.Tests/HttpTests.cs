@@ -243,5 +243,32 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("https://httpbin.org/post", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
+
+        [Fact]
+        public async Task InvalidSendFormForm()
+        {
+            var settings = new HttpSettings();
+
+            var form = new System.Collections.Specialized.NameValueCollection
+            {
+                ["nullValue"] = null,
+                // if not handled, throws System.ArgumentNullException
+                // at System.Net.Http.StringContent.GetContentByteArray(String content, Encoding encoding)
+                // at System.Net.Http.StringContent..ctor(String content, Encoding encoding, String mediaType)
+                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
+                [null] = "nullKey",
+                // if not handled, throws System.ArgumentException
+                // at System.Net.Http.MultipartFormDataContent.Add(HttpContent content, String name)
+                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
+            };
+
+            var result = await Http.Request("https://httpbin.org/post", settings)
+                .SendForm(form)
+                .ExpectJson<HttpBinResponse>()
+                .PostAsync();
+
+            Assert.False(result.Success);
+            Assert.NotNull(result.Error);
+        }
     }
 }

@@ -1,7 +1,7 @@
 ## Stack Exchange Utility Packages
 Home for the StackExchange.Util.* packages.
 
-#### StackExchange.Utils.Http
+### StackExchange.Utils.Http
 `Http` is a helper class for making `HttpClient` calls. The send, deserialization, options, and verb portions are exchangable. Some examples:
 
 POSTing a string and expecting a string:
@@ -46,6 +46,16 @@ else
     // result.RawRequest
     // result.RawResponse
 }
+```
+
+#### Profiling
+There are settings (`.ProfileRequest` and `.ProfileGeneral`) specifically for profiling - these are used and disposed around the events. By implementing `IDisposable` in something, you can time the events.
+
+If you're using something like [MiniProfiler](https://miniprofiler.com/dotnet/), you can instrument HTTP calls in the default settings, like this:
+```cs
+var settings = Http.DefaultSettings;
+settings.ProfileRequest = request => MiniProfiler.Current.CustomTiming("http", request.RequestUri.ToString(), request.Method.Method);
+settings.ProfileGeneral = name => MiniProfiler.Current.Step(name);
 ```
 
 #### License

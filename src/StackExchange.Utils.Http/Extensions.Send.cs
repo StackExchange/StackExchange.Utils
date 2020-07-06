@@ -88,7 +88,9 @@ namespace StackExchange.Utils
             {
                 Serializer.Serialize(gzs, obj);
                 gzs.Close();
-                var protoContent = new ByteArrayContent(output.ToArray());
+                var protoContent = output.TryGetBuffer(out var segment)
+                    ? new ByteArrayContent(segment.Array, segment.Offset, segment.Count)
+                    : new ByteArrayContent(output.ToArray());
                 protoContent.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
                 protoContent.Headers.Add("Content-Encoding", "gzip");
                 return SendContent(builder, protoContent);

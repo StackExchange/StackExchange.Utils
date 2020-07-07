@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace StackExchange.Utils
 {
@@ -66,6 +68,11 @@ namespace StackExchange.Utils
         /// </para>
         /// </summary>
         public Func<IWebProxy> DefaultProxyFactory { get; set; } = null;
+
+        /// <summary>
+        /// Gets or sets a server certificate validator to use.
+        /// </summary>
+        public Func<HttpRequestMessage, X509Certificate2, X509Chain, SslPolicyErrors, bool> ServerCertificateCustomValidationCallback { get; set; }
 
         internal void OnBeforeSend(object sender, IRequestBuilder builder) => BeforeSend?.Invoke(sender, builder);
         internal void OnException(object sender, HttpExceptionArgs args) => Exception?.Invoke(sender, args);

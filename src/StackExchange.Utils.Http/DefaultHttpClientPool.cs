@@ -34,6 +34,11 @@ namespace StackExchange.Utils
             {
                 UseCookies = false
             };
+            var serverCertificateCustomValidationCallback = Settings?.ServerCertificateCustomValidationCallback;
+            if (serverCertificateCustomValidationCallback is object)
+            {
+                handler.ServerCertificateCustomValidationCallback = serverCertificateCustomValidationCallback;
+            }
             if (options.Proxy != null)
             {
                 handler.UseProxy = true;

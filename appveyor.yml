@@ -17,7 +17,7 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-  - ps: .\build\dotnet-install.ps1 -Version 3.0.100
+  - ps: .\build\dotnet-install.ps1 -Version 3.1.201
   - ps: .\build.ps1 -PullRequestNumber "$env:APPVEYOR_PULL_REQUEST_NUMBER" -CreatePackages $true
 
 test: off

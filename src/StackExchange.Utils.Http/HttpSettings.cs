@@ -88,9 +88,9 @@ namespace StackExchange.Utils
 
         private const string Switch_AllowUnencryptedHttp2 = "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport";
         /// <summary>
-        /// Allows HttpClient to use HTTP/2 without TLS
+        /// Allows <see cref="HttpClient"/> to use HTTP/2 without TLS; this is an application-wide setting
         /// </summary>
-        public static bool AllowUnencryptedHttp2
+        public static bool GlobalAllowUnencryptedHttp2
         {
             get => AppContext.TryGetSwitch(Switch_AllowUnencryptedHttp2, out var enabled) && enabled;
             set => AppContext.SetSwitch(Switch_AllowUnencryptedHttp2, value);

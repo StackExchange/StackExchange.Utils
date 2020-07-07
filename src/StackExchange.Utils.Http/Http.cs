@@ -108,15 +108,5 @@ namespace StackExchange.Utils
 
             return result;
         }
-
-        private const string Switch_AllowUnencryptedHttp2 = "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport";
-        /// <summary>
-        /// Allows HttpClient to use HTTP/2 without TLS
-        /// </summary>
-        public static bool AllowUnencryptedHttp2
-        {
-            get => AppContext.TryGetSwitch(Switch_AllowUnencryptedHttp2, out var enabled) && enabled;
-            set => AppContext.SetSwitch(Switch_AllowUnencryptedHttp2, value);
-        }
     }
 }

@@ -66,10 +66,10 @@ namespace StackExchange.Utils.Tests
         [InlineData(HttpProtocols.Http1AndHttp2, true, false, "2.0", "2.0", "HTTP/2")]
         public async Task UsesVersion(HttpProtocols protocols, bool tls, bool allowUnencryptedHttp2, string specified, string expectedVersion, string expectedResponse, bool failure = false)
         {
-            bool oldMode = Http.AllowUnencryptedHttp2;
+            bool oldMode = HttpSettings.AllowUnencryptedHttp2;
             try
             {
-                Http.AllowUnencryptedHttp2 = allowUnencryptedHttp2;
+                HttpSettings.AllowUnencryptedHttp2 = allowUnencryptedHttp2;
 
                 var uri = _server.GetUri(protocols, tls);
                 Log($"Server is on {uri}; specifying: '{specified}'");
@@ -108,11 +108,10 @@ namespace StackExchange.Utils.Tests
                     Assert.Equal(expectedVersion, result.RawResponse?.Version?.ToString());
                     Assert.Equal(expectedResponse, result.Data);
                 }
-                
             }
             finally
             {
-                Http.AllowUnencryptedHttp2 = oldMode;
+                HttpSettings.AllowUnencryptedHttp2 = oldMode;
             }
         }
 

@@ -61,7 +61,7 @@ settings.ProfileGeneral = name => MiniProfiler.Current.Step(name);
 ### StackExchange.Utils.Configuration
 `StackExchange.Utils.Configuration` is a helper library that performs substitution and prefixing for `IConfiguration`-based configuration sources. It allows a value in the configuration tree to reference other values within the configuration system using a placeholder syntax `${key}` or `${nested:key}`. In addition, prefixing allows a "namespace" prefix to be applied to a subset of configuration, making it possible to segment configuration into logical areas.
 
-This is particularly useful for storing secrets in a different, secure location but in a way that it makes it easy to compose configuration like connection strings with dealing with it inside the application. E.g. consider the following files:
+This is particularly useful for storing secrets in a different, secure location but in a way that it makes it easy to compose configuration values like connection strings without dealing with it inside the application. E.g. consider the following files:
 
 **appsettings.json**
 ```json

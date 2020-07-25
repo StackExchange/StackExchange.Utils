@@ -14,6 +14,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: .NET Build
       run: dotnet build Build.csproj -c Release --nologo /p:CI=true
     - name: .NET Test
@@ -24,6 +26,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: .NET Build
       run: dotnet build Build.csproj -c Release --nologo /p:CI=true
     - name: .NET Test

@@ -25,8 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.ps1 = build.ps1
 		global.json = global.json
 		nuget.config = nuget.config
-		version.json = version.json
+		build.sh = build.sh
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StackExchange.Utils.Configuration", "src\StackExchange.Utils.Configuration\StackExchange.Utils.Configuration.csproj", "{7BADB8FA-9723-4B10-B71C-427F2431D4FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{33716E0F-FE40-4A7A-9F58-1026EF7EBCD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33716E0F-FE40-4A7A-9F58-1026EF7EBCD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33716E0F-FE40-4A7A-9F58-1026EF7EBCD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BADB8FA-9723-4B10-B71C-427F2431D4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BADB8FA-9723-4B10-B71C-427F2431D4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BADB8FA-9723-4B10-B71C-427F2431D4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BADB8FA-9723-4B10-B71C-427F2431D4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +55,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{168B503A-428F-499D-99A7-8EFC47A5FEDF} = {F0CFAC4D-516B-45DC-8F66-D58E3B1C04E1}
 		{33716E0F-FE40-4A7A-9F58-1026EF7EBCD2} = {9133A680-3A8F-4662-AA58-B59BBDD0A60E}
+		{7BADB8FA-9723-4B10-B71C-427F2431D4FE} = {F0CFAC4D-516B-45DC-8F66-D58E3B1C04E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F211D702-85D2-4159-9B42-60B6177497B7}

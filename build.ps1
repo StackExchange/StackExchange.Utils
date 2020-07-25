@@ -10,9 +10,10 @@ Write-Host "  CreatePackages: $CreatePackages"
 Write-Host "  RunTests: $RunTests"
 Write-Host "  dotnet --version:" (dotnet --version)
 
-$packageOutputFolder = "$PSScriptRoot\.nupkgs"
+$packageOutputFolder = Join-Path $PSScriptRoot ".nupkgs"
 $projectsToBuild =
-    'StackExchange.Utils.Http'
+    'StackExchange.Utils.Http',
+    'StackExchange.Utils.Configuration'
 
 $testsToRun =
     'StackExchange.Utils.Tests'

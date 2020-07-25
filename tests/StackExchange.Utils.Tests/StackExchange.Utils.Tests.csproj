@@ -1,16 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp3.1</TargetFrameworks>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../src/StackExchange.Utils.Http/StackExchange.Utils.Http.csproj" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <DefineConstants>$(DefineConstants);KESTREL</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
+    <ProjectReference Include="../../src/StackExchange.Utils.Http/StackExchange.Utils.Http.csproj" />
+    <ProjectReference Include="../../src/StackExchange.Utils.Configuration/StackExchange.Utils.Configuration.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="certificate.pfx">

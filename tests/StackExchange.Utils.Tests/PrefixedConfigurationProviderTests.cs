@@ -123,5 +123,49 @@ namespace StackExchange.Utils.Tests
             Assert.Null(configuration.GetValue<string>("test:Key"));
             Assert.Equal("Value", configuration.GetValue<string>("test:nested:Key"));
         }
+        
+        [Fact]
+        public void CanSetExistingKey()
+        {
+            var configuration = new ConfigurationBuilder()
+                .WithPrefix(
+                    "prefix",
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string> {["Key"] = "Value"}
+                        );
+                    }
+                )
+                .Build();
+
+            configuration["prefix:Key"] = "NewValue";
+
+            Assert.Null(configuration["Key"]);
+            Assert.Equal("NewValue", configuration["prefix:Key"]);
+        }
+        
+        [Fact]
+        public void CanSetNewKey()
+        {
+            var configuration = new ConfigurationBuilder()
+                .WithPrefix(
+                    "prefix",
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string> {["Key"] = "Value"}
+                        );
+                    }
+                )
+                .Build();
+            
+            configuration["prefix:NewKey"] = "NewValue";
+
+            Assert.Null(configuration["Key"]);
+            Assert.Null(configuration["NewKey"]);
+            Assert.Equal("Value", configuration["prefix:Key"]);
+            Assert.Equal("NewValue", configuration["prefix:NewKey"]);
+        }
     }
 }

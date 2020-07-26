@@ -34,7 +34,7 @@ namespace StackExchange.Utils
             ConfigurationRoot.Reload();
         }
 
-        public void Set(string key, string value) => throw new NotSupportedException();
+        public virtual void Set(string key, string value) => ConfigurationRoot[key] = value;
 
         public virtual bool TryGet(string key, out string value)
         {

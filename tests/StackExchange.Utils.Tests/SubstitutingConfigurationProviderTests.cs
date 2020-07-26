@@ -229,5 +229,44 @@ namespace StackExchange.Utils.Tests
                 () => configuration.GetValue<string>("KeyA")
             );
         }
+
+        [Fact]
+        public void CanSetExistingKey()
+        {
+            var configuration = new ConfigurationBuilder()
+                .WithSubstitution(
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string> {["Key"] = "Value"}
+                        );
+                    }
+                )
+                .Build();
+
+            configuration["Key"] = "NewValue";
+
+            Assert.Equal("NewValue", configuration["Key"]);
+        }
+        
+        [Fact]
+        public void CanSetNewKey()
+        {
+            var configuration = new ConfigurationBuilder()
+                .WithSubstitution(
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string> {["Key"] = "Value"}
+                        );
+                    }
+                )
+                .Build();
+
+            configuration["NewKey"] = "NewValue";
+
+            Assert.Equal("Value", configuration["Key"]);
+            Assert.Equal("NewValue", configuration["NewKey"]);
+        }
     }
 }

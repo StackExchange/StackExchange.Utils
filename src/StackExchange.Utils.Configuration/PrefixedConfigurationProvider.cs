@@ -27,6 +27,18 @@ namespace StackExchange.Utils
             }
         }
 
+        public override void Set(string key, string value)
+        {
+            if (!key.StartsWith(_prefixWithDelimiter) || key.Length == _prefixWithDelimiter.Length)
+            {
+                return;
+            }
+            
+            // TODO: make this moar efficient!
+            // slice off the prefix so we can fetch from our underlying providers
+            base.Set(key.AsSpan().Slice(_prefixWithDelimiter.Length).ToString(), value);
+        }
+        
         public override bool TryGet(string key, out string value)
         {
             if (!key.StartsWith(_prefixWithDelimiter) || key.Length == _prefixWithDelimiter.Length)

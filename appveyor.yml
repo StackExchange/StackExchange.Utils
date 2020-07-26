@@ -17,11 +17,11 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-  - ps: .\build.ps1 -PullRequestNumber "$env:APPVEYOR_PULL_REQUEST_NUMBER" -CreatePackages $true
+  - ps: ./build.ps1 -PullRequestNumber "$env:APPVEYOR_PULL_REQUEST_NUMBER" -CreatePackages $true
 
 test: off
 artifacts:
-- path: .\.nupkgs\*.nupkg
+- path: ./.nupkgs/*.nupkg
 
 deploy:
 - provider: NuGet

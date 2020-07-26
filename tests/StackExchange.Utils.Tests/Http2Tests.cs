@@ -185,6 +185,7 @@ namespace StackExchange.Utils.Tests
                     Thread.Sleep(100);
                     if (t.IsFaulted)
                     {
+                        // this will cause the task to throw the exception
                         t.Wait();
                     }
                 }

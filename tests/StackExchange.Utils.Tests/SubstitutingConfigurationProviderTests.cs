@@ -8,6 +8,14 @@ namespace StackExchange.Utils.Tests
     public class SubstitutingConfigurationProviderTests
     {
         [Fact]
+        public void InvalidArguments()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => new ConfigurationBuilder().WithSubstitution(null)
+            );
+        }
+        
+        [Fact]
         public void BasicSubstitution()
         {
             var configuration = new ConfigurationBuilder()

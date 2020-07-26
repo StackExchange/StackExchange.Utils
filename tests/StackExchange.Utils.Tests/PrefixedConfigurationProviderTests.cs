@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Xunit;
@@ -6,6 +7,22 @@ namespace StackExchange.Utils.Tests
 {
     public class PrefixedConfigurationProviderTests
     {
+        [Fact]
+        public void InvalidArguments()
+        {
+            Assert.Throws<ArgumentNullException>(
+                () => new ConfigurationBuilder().WithPrefix(null, c => { })
+            );
+            
+            Assert.Throws<ArgumentNullException>(
+                () => new ConfigurationBuilder().WithPrefix(string.Empty, c => { })
+            );
+            
+            Assert.Throws<ArgumentNullException>(
+                () => new ConfigurationBuilder().WithPrefix("prefix", null)
+            );
+        }
+        
         [Fact]
         public void ValuesArePrefixed()
         {

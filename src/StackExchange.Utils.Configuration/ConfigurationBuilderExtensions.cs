@@ -17,6 +17,8 @@ namespace StackExchange.Utils
         /// </summary>
         public static IConfigurationBuilder WithSubstitution(this IConfigurationBuilder builder, Action<IConfigurationBuilder> action)
         {
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            
             var childBuilder = new ConfigurationBuilder();
             action(childBuilder);
             builder.Add(new SubstitutingConfigurationSource(childBuilder));
@@ -30,6 +32,9 @@ namespace StackExchange.Utils
         /// </summary>
         public static IConfigurationBuilder WithPrefix(this IConfigurationBuilder builder, string prefix, Action<IConfigurationBuilder> action)
         {
+            if (string.IsNullOrEmpty(prefix)) throw new ArgumentNullException(nameof(prefix));
+            if (action == null) throw new ArgumentNullException(nameof(action));
+            
             var childBuilder = new ConfigurationBuilder();
             action(childBuilder);
             builder.Add(new PrefixedConfigurationSource(prefix, childBuilder));

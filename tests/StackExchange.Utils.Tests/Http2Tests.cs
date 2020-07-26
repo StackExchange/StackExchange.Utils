@@ -1,8 +1,8 @@
-﻿#if KESTREL
-using System;
+﻿using System;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +24,7 @@ namespace StackExchange.Utils.Tests
             _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
-        [Theory]
+        [SkippableTheory]
         // non-TLS http1: should work (returning 1.1)
         [InlineData(HttpProtocols.Http1, false, false, null, "1.1", "HTTP/1.1")]
         [InlineData(HttpProtocols.Http1, false, false, "1.1", "1.1", "HTTP/1.1")]
@@ -65,7 +65,14 @@ namespace StackExchange.Utils.Tests
         [InlineData(HttpProtocols.Http1AndHttp2, true, false, "1.1", "1.1", "HTTP/1.1")]
         [InlineData(HttpProtocols.Http1AndHttp2, true, false, "2.0", "2.0", "HTTP/2")]
         public async Task UsesVersion(HttpProtocols protocols, bool tls, bool allowUnencryptedHttp2, string specified, string expectedVersion, string expectedResponse, bool failure = false)
-        {
+        { 
+            // wheeee, MacOS doesn't support ALPN so it can't do HTTP/2 over TLS
+            // skip the test if that's what we're trying to test
+            Skip.If(
+                RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && tls && (protocols == HttpProtocols.Http2 || protocols == HttpProtocols.Http1AndHttp2) && specified == "2.0",
+                "HTTP/2 over TLS is not currently supported on MacOS"
+            );
+            
             bool oldMode = HttpSettings.GlobalAllowUnencryptedHttp2;
             try
             {
@@ -153,28 +160,37 @@ namespace StackExchange.Utils.Tests
                         options.ListenLocalhost(_ports[3], listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http1;
-                            listenOptions.UseHttps("certificate.pfx");
+                            listenOptions.UseHttps("certificate.pfx", "password");
                         });
                         options.ListenLocalhost(_ports[4], listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http2;
-                            listenOptions.UseHttps("certificate.pfx");
+                            listenOptions.UseHttps("certificate.pfx", "password");
                         });
                         options.ListenLocalhost(_ports[5], listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-                            listenOptions.UseHttps("certificate.pfx");
+                            listenOptions.UseHttps("certificate.pfx", "password");
                         });
                     })
                     .Configure(app => {
                         app.Run(context => context.Response.WriteAsync(context.Request.Protocol));
                     })
                     .Build();
-                _ = _host.RunAsync();
+                var t = _host.RunAsync();
+                // rudimentary check for failure
+                // this is usually down to something like a certificate failure
+                for (var i = 0; i < 5; i++)
+                {
+                    Thread.Sleep(100);
+                    if (t.IsFaulted)
+                    {
+                        t.Wait();
+                    }
+                }
             }
             void IDisposable.Dispose()
                 => _ = _host.StopAsync();
         }
     }
 }
-#endif

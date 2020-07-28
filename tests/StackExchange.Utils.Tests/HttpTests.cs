@@ -245,21 +245,13 @@ namespace StackExchange.Utils.Tests
         }
 
         [Fact]
-        public async Task InvalidSendFormForm()
+        public async Task NullSendFormValue()
         {
             var settings = new HttpSettings();
 
             var form = new System.Collections.Specialized.NameValueCollection
             {
                 ["nullValue"] = null,
-                // if not handled, throws System.ArgumentNullException
-                // at System.Net.Http.StringContent.GetContentByteArray(String content, Encoding encoding)
-                // at System.Net.Http.StringContent..ctor(String content, Encoding encoding, String mediaType)
-                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
-                [null] = "nullKey",
-                // if not handled, throws System.ArgumentException
-                // at System.Net.Http.MultipartFormDataContent.Add(HttpContent content, String name)
-                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
             };
 
             var result = await Http.Request("https://httpbin.org/post", settings)
@@ -267,8 +259,28 @@ namespace StackExchange.Utils.Tests
                 .ExpectJson<HttpBinResponse>()
                 .PostAsync();
 
-            Assert.False(result.Success);
-            Assert.NotNull(result.Error);
+            Assert.True(result.Success);
+            Assert.Null(result.Error);
+            Assert.Same("", result.Data.Form["nullValue"]);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void NullSendFormKey(string key)
+        {
+            var settings = new HttpSettings();
+
+            var form = new System.Collections.Specialized.NameValueCollection
+            {
+                [key] = "nullKey",
+                // if not handled, throws System.ArgumentException
+                // at System.Net.Http.MultipartFormDataContent.Add(HttpContent content, String name)
+                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
+            };
+
+            Assert.ThrowsAny<Exception>(() => Http.Request("https://httpbin.org/post", settings).SendForm(form));
+            // TODO would it be more appropriate to return just log the error and return it in result.Error after .PostAsync?
         }
     }
 }

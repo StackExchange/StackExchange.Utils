@@ -243,5 +243,44 @@ namespace StackExchange.Utils.Tests
             Assert.Equal("https://httpbin.org/post", result.Data.Url);
             Assert.Equal(Http.DefaultSettings.UserAgent, result.Data.Headers["User-Agent"]);
         }
+
+        [Fact]
+        public async Task NullSendFormValue()
+        {
+            var settings = new HttpSettings();
+
+            var form = new System.Collections.Specialized.NameValueCollection
+            {
+                ["nullValue"] = null,
+            };
+
+            var result = await Http.Request("https://httpbin.org/post", settings)
+                .SendForm(form)
+                .ExpectJson<HttpBinResponse>()
+                .PostAsync();
+
+            Assert.True(result.Success);
+            Assert.Null(result.Error);
+            Assert.Same("", result.Data.Form["nullValue"]);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void NullSendFormKey(string key)
+        {
+            var settings = new HttpSettings();
+
+            var form = new System.Collections.Specialized.NameValueCollection
+            {
+                [key] = "nullKey",
+                // if not handled, throws System.ArgumentException
+                // at System.Net.Http.MultipartFormDataContent.Add(HttpContent content, String name)
+                // at StackExchange.Utils.ExtensionsForHttp.SendForm(IRequestBuilder builder, NameValueCollection form)
+            };
+
+            Assert.ThrowsAny<Exception>(() => Http.Request("https://httpbin.org/post", settings).SendForm(form));
+            // TODO would it be more appropriate to return just log the error and return it in result.Error after .PostAsync?
+        }
     }
 }

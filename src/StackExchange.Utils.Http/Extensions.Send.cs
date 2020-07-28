@@ -34,7 +34,7 @@ namespace StackExchange.Utils
             var content = new MultipartFormDataContent();
             foreach(var formKey in form.AllKeys)
             {                
-                content.Add(new StringContent(form[formKey]), formKey);
+                content.Add(new StringContent(form[formKey] ?? string.Empty), formKey);
             }
             return SendContent(builder, content);
         }

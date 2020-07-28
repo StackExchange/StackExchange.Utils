@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 
 init:
   - git config --global core.autocrlf input
@@ -17,12 +17,11 @@ nuget:
   disable_publish_on_pr: true
 
 build_script:
-  - ps: .\build\dotnet-install.ps1 -Version 2.1.300
-  - ps: .\build.ps1 -PullRequestNumber "$env:APPVEYOR_PULL_REQUEST_NUMBER" -CreatePackages $true
+  - ps: ./build.ps1 -PullRequestNumber "$env:APPVEYOR_PULL_REQUEST_NUMBER" -CreatePackages $true
 
 test: off
 artifacts:
-- path: .\.nupkgs\*.nupkg
+- path: ./.nupkgs/*.nupkg
 
 deploy:
 - provider: NuGet

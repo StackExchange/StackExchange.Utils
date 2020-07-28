@@ -192,5 +192,14 @@ namespace StackExchange.Utils
             }
             return builder;
         }
+
+        /// <summary>
+        /// Specifies the HTTP version to use for this request
+        /// </summary>
+        public static IRequestBuilder WithProtocolVersion(this IRequestBuilder builder, Version version)
+        {
+            builder.Message.Version = version;
+            return builder;
+        }
     }
 }

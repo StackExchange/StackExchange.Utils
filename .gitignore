@@ -4,4 +4,6 @@ obj
 *.suo
 *.user
 *.nupkgs
+.idea/*
 .vs/*
+.DS_Store

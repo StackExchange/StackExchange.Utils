@@ -75,7 +75,7 @@ namespace StackExchange.Utils
                     }
                 }
             }
-            catch (TaskCanceledException ex)
+            catch (OperationCanceledException ex)
             {
                 exception = cancellationToken.IsCancellationRequested
                     ? new HttpClientException("HttpClient request cancelled by token request.", builder.Inner.Message.RequestUri, ex)

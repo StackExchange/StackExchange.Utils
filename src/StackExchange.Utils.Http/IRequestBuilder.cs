@@ -42,6 +42,12 @@ namespace StackExchange.Utils
         TimeSpan Timeout { get; set; }
 
         /// <summary>
+        /// The HttpCompletionOption to use on this request.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        HttpCompletionOption CompletionOption { get; set; }
+
+        /// <summary>
         /// The Proxy to use when making requests
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

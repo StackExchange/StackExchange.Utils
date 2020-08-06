@@ -42,10 +42,10 @@ namespace StackExchange.Utils
         TimeSpan Timeout { get; set; }
 
         /// <summary>
-        /// The HttpCompletionOption to use on this request.
+        /// Indicate if the response content should be buffered. Sets the HttpCompletionOption to use on this request accordingly.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        HttpCompletionOption CompletionOption { get; set; }
+        bool BufferResponse { get; set; }
 
         /// <summary>
         /// The Proxy to use when making requests

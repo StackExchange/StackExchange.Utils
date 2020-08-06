@@ -16,7 +16,6 @@ namespace StackExchange.Utils
         /// <returns>A typed request builder for chaining.</returns>
         public static IRequestBuilder<bool> ExpectHttpSuccess(this IRequestBuilder builder)
         {
-            builder.CompletionOption = HttpCompletionOption.ResponseHeadersRead;
             return builder.WithHandler(responseMessage => Task.FromResult(responseMessage.IsSuccessStatusCode));
         }
             
@@ -59,7 +58,6 @@ namespace StackExchange.Utils
         /// <returns>A typed request builder for chaining.</returns>
         public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder, Options jsonOptions)
         {
-            builder.CompletionOption = HttpCompletionOption.ResponseHeadersRead;
             return builder.WithHandler(JsonHandler<T>.WithOptions(builder, jsonOptions));
         }
 
@@ -85,7 +83,7 @@ namespace StackExchange.Utils
         /// <param name="builder">The builder we're working on.</param>
         /// <returns>A typed request builder for chaining.</returns>
         public static IRequestBuilder<byte[]> ExpectByteArray(this IRequestBuilder builder) =>
-            builder.WithHandler(responseMessage => responseMessage.Content.ReadAsByteArrayAsync());
+           builder.WithHandler(responseMessage => responseMessage.Content.ReadAsByteArrayAsync());
 
         /// <summary>
         /// Sets the response handler for this request to return the response as a <see cref="string"/>.

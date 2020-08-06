@@ -14,11 +14,8 @@ namespace StackExchange.Utils
         /// </summary>
         /// <param name="builder">The builder we're working on.</param>
         /// <returns>A typed request builder for chaining.</returns>
-        public static IRequestBuilder<bool> ExpectHttpSuccess(this IRequestBuilder builder)
-        {
-            return builder.WithHandler(responseMessage => Task.FromResult(responseMessage.IsSuccessStatusCode));
-        }
-            
+        public static IRequestBuilder<bool> ExpectHttpSuccess(this IRequestBuilder builder) =>
+            builder.WithHandler(responseMessage => Task.FromResult(responseMessage.IsSuccessStatusCode));
 
         /// <summary>
         /// <para>Holds handlers for ExpectJson(T) calls, so we don't re-create them in the common "default Options" case.</para>
@@ -35,6 +32,11 @@ namespace StackExchange.Utils
                     using (var streamReader = new StreamReader(responseStream))                    // Stream reader
                     using (builder.GetSettings().ProfileGeneral?.Invoke("Deserialize: JSON"))
                     {
+                        if (builder.BufferResponse && responseStream.Length == 0)
+                        {
+                            return default;
+                        }
+
                         return JSON.Deserialize<T>(streamReader, jsonOptions ?? Options.Default);
                     }
                 };
@@ -56,10 +58,8 @@ namespace StackExchange.Utils
         /// <param name="builder">The builder we're working on.</param>
         /// <param name="jsonOptions">The Jil options to use when serializing.</param>
         /// <returns>A typed request builder for chaining.</returns>
-        public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder, Options jsonOptions)
-        {
-            return builder.WithHandler(JsonHandler<T>.WithOptions(builder, jsonOptions));
-        }
+        public static IRequestBuilder<T> ExpectJson<T>(this IRequestBuilder builder, Options jsonOptions) =>
+            builder.WithHandler(JsonHandler<T>.WithOptions(builder, jsonOptions));
 
         /// <summary>
         /// Sets the response handler for this request to a protobuf deserializer.
@@ -83,7 +83,7 @@ namespace StackExchange.Utils
         /// <param name="builder">The builder we're working on.</param>
         /// <returns>A typed request builder for chaining.</returns>
         public static IRequestBuilder<byte[]> ExpectByteArray(this IRequestBuilder builder) =>
-           builder.WithHandler(responseMessage => responseMessage.Content.ReadAsByteArrayAsync());
+            builder.WithHandler(responseMessage => responseMessage.Content.ReadAsByteArrayAsync());
 
         /// <summary>
         /// Sets the response handler for this request to return the response as a <see cref="string"/>.

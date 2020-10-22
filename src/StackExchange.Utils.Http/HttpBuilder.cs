@@ -15,6 +15,7 @@ namespace StackExchange.Utils
         public IEnumerable<HttpStatusCode> IgnoredResponseStatuses { get; set; } = Enumerable.Empty<HttpStatusCode>();
         public TimeSpan Timeout { get; set; }
         public IWebProxy Proxy { get; set; }
+        public bool BufferResponse { get; set; } = true;
         public IHttpClientPool ClientPool { get; set; }
         public event EventHandler<HttpExceptionArgs> BeforeExceptionLog;
         private readonly string _callerName, _callerFile;

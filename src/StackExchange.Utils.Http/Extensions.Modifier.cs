@@ -201,5 +201,14 @@ namespace StackExchange.Utils
             builder.Message.Version = version;
             return builder;
         }
+
+        /// <summary>
+        /// Indicates that the response's content shouldn't be buffered, setting the HttpCompletionOption accordingly.
+        /// </summary>
+        public static IRequestBuilder WithoutResponseBuffering(this IRequestBuilder builder)
+        {
+            builder.BufferResponse = false;
+            return builder;
+        }
     }
 }

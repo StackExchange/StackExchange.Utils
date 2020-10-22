@@ -42,6 +42,13 @@ namespace StackExchange.Utils
         TimeSpan Timeout { get; set; }
 
         /// <summary>
+        /// Indicate if the response content should be buffered (e.g. for access later, vs. only streamed when false). 
+        /// Sets the HttpCompletionOption to use on this request accordingly.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool BufferResponse { get; set; }
+
+        /// <summary>
         /// The Proxy to use when making requests
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

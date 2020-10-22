@@ -32,7 +32,7 @@ namespace StackExchange.Utils
                     using (var streamReader = new StreamReader(responseStream))                    // Stream reader
                     using (builder.GetSettings().ProfileGeneral?.Invoke("Deserialize: JSON"))
                     {
-                        if (responseStream.Length == 0)
+                        if (builder.BufferResponse && responseStream.Length == 0)
                         {
                             return default;
                         }

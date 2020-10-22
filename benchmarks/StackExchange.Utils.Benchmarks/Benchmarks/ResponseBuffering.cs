@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
-using StackExchange.Utils;
 
-namespace Benchmarks.Benchmarks
+namespace StackExchange.Utils.Benchmarks.Benchmarks
 {
     [MemoryDiagnoser]
     [SimpleJob(RuntimeMoniker.Net472)]

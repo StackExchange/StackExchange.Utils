@@ -20,7 +20,7 @@ namespace StackExchange.Utils
 
         public override IEnumerable<string> GetChildKeys(IEnumerable<string> earlierKeys, string parentPath)
         {
-            if (parentPath != null && !parentPath.StartsWith(_prefix))
+            if (parentPath != null && !parentPath.StartsWith(_prefix, StringComparison.OrdinalIgnoreCase))
             {
                 return earlierKeys;
             }
@@ -52,7 +52,7 @@ namespace StackExchange.Utils
 
         public override void Set(string key, string value)
         {
-            if (!key.StartsWith(_prefixWithDelimiter) || key.Length == _prefixWithDelimiter.Length)
+            if (!key.StartsWith(_prefixWithDelimiter, StringComparison.OrdinalIgnoreCase) || key.Length == _prefixWithDelimiter.Length)
             {
                 return;
             }
@@ -62,7 +62,7 @@ namespace StackExchange.Utils
         
         public override bool TryGet(string key, out string value)
         {
-            if (!key.StartsWith(_prefixWithDelimiter) || key.Length == _prefixWithDelimiter.Length)
+            if (!key.StartsWith(_prefixWithDelimiter, StringComparison.OrdinalIgnoreCase) || key.Length == _prefixWithDelimiter.Length)
             {
                 value = null;
                 return false;

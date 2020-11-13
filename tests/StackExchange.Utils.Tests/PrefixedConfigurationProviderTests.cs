@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Xunit;
@@ -23,6 +23,37 @@ namespace StackExchange.Utils.Tests
             );
         }
         
+        [Fact]
+        public void PrefixesDoNotTrashPreviousKeys()
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(
+                new Dictionary<string, string>
+                {
+                    ["Kestrel:Endpoints:Http:Url"] = "http://*:6001/",
+                    ["Testing:Blah"] = "BaseValue"
+                }
+                )
+                .WithPrefix(
+                    "secrets",
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string>
+                            {
+                                ["Testing:Blah"] = "ShouldNotOverride",
+                                ["ShouldBeAccessibleUsingPrefix"] = "Test"
+                            });
+                    })
+                .Build();
+
+            Assert.Equal("http://*:6001/", configuration.GetValue<string>("Kestrel:Endpoints:Http:Url"));
+            Assert.Equal("BaseValue", configuration.GetValue<string>("Testing:Blah"));
+            Assert.Equal("ShouldNotOverride", configuration.GetValue<string>("secrets:Testing:Blah"));
+            Assert.Equal("Test", configuration.GetValue<string>("secrets:ShouldBeAccessibleUsingPrefix"));
+            Assert.Null(configuration.GetValue<string>("ShouldBeAccessibleUsingPrefix"));
+        }
+
         [Fact]
         public void ValuesArePrefixed()
         {

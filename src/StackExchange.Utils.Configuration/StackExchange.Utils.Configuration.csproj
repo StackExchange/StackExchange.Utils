@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageTags>configuration</PackageTags>
+    <Description>Extension methods for providing substitution and prefixing support to IConfiguration.</Description>
   </PropertyGroup>
 
   <ItemGroup>

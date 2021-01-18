@@ -11,7 +11,7 @@
 
     <Authors>Stack Exchange</Authors>
     <PackageId>$(AssemblyName)</PackageId>
-    <Copyright>Stack Exchange, Inc. 2018</Copyright>
+    <Copyright>Stack Exchange, Inc. 2021</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/StackExchange/StackExchange.Utils</PackageProjectUrl>
     <RepositoryUrl>https://github.com/StackExchange/StackExchange.Utils</RepositoryUrl>

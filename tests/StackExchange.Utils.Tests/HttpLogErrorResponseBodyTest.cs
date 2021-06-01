@@ -20,12 +20,12 @@ namespace StackExchange.Utils.Tests
             var response = await Http
                 .Request("http://localhost:9191/some-endpoint")
                 .WithErrorResponseBodyLogging(HttpStatusCode.UnprocessableEntity)
-                .ExpectString()
+                .ExpectJson<SomeResponseObject>()
                 .GetAsync();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity,response.StatusCode);
             
-            var httpCallResponses = Assert.IsType<HttpCallResponse<string>>(response);
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
             Assert.Equal(errorResponseBody, httpCallResponses.Error.Data[Http.DefaultSettings.ErrorDataPrefix + "Response.Body"]);
         }
         
@@ -40,12 +40,12 @@ namespace StackExchange.Utils.Tests
             var response = await Http
                 .Request("http://localhost:9191/some-endpoint")
                 .WithErrorResponseBodyLogging(HttpStatusCode.NotAcceptable, HttpStatusCode.UnprocessableEntity)
-                .ExpectString()
+                .ExpectJson<SomeResponseObject>()
                 .GetAsync();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity,response.StatusCode);
             
-            var httpCallResponses = Assert.IsType<HttpCallResponse<string>>(response);
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
             Assert.Equal(errorResponseBody, httpCallResponses.Error.Data[Http.DefaultSettings.ErrorDataPrefix + "Response.Body"]);
         }
         
@@ -60,12 +60,12 @@ namespace StackExchange.Utils.Tests
             var response = await Http
                 .Request("http://localhost:9191/some-endpoint")
                 .WithErrorResponseBodyLogging(HttpStatusCode.NotAcceptable, HttpStatusCode.BadRequest)
-                .ExpectString()
+                .ExpectJson<SomeResponseObject>()
                 .GetAsync();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity,response.StatusCode);
             
-            var httpCallResponses = Assert.IsType<HttpCallResponse<string>>(response);
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
             Assert.Null(httpCallResponses.Error.Data[Http.DefaultSettings.ErrorDataPrefix + "Response.Body"]);
         }
 
@@ -80,12 +80,12 @@ namespace StackExchange.Utils.Tests
             var response = await Http
                 .Request("http://localhost:9191/some-endpoint")
                 .WithErrorResponseBodyLogging()
-                .ExpectString()
+                .ExpectJson<SomeResponseObject>()
                 .GetAsync();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity,response.StatusCode);
             
-            var httpCallResponses = Assert.IsType<HttpCallResponse<string>>(response);
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
             Assert.Null(httpCallResponses.Error.Data[Http.DefaultSettings.ErrorDataPrefix + "Response.Body"]);
         }
         
@@ -99,13 +99,39 @@ namespace StackExchange.Utils.Tests
 
             var response = await Http
                 .Request("http://localhost:9191/some-endpoint")
-                .ExpectString()
+                .ExpectJson<SomeResponseObject>()
                 .GetAsync();
 
             Assert.Equal(HttpStatusCode.UnprocessableEntity,response.StatusCode);
             
-            var httpCallResponses = Assert.IsType<HttpCallResponse<string>>(response);
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
             Assert.Null(httpCallResponses.Error.Data[Http.DefaultSettings.ErrorDataPrefix + "Response.Body"]);
         }
+        
+        [Fact]
+        public async Task WithErrorResponseBodyLogging_IfResponseSuccess_DoesNotIncludeResponseBodyInExceptionAndDeserializesCorrectly()
+        {
+            const string successResponseBody = @"{""SomeAttribute"": ""some value""}";
+            _stubHttp.Stub(x => x.Get("/some-endpoint"))
+                .Return(successResponseBody)
+                .WithStatus(HttpStatusCode.OK);
+
+            var response = await Http
+                .Request("http://localhost:9191/some-endpoint")
+                .WithErrorResponseBodyLogging(HttpStatusCode.UnprocessableEntity)
+                .ExpectJson<SomeResponseObject>()
+                .GetAsync();
+
+            Assert.Equal(HttpStatusCode.OK,response.StatusCode);
+            
+            var httpCallResponses = Assert.IsType<HttpCallResponse<SomeResponseObject>>(response);
+            Assert.Null(httpCallResponses.Error);
+            Assert.Equal("some value", httpCallResponses.Data.SomeAttribute);
+        }
+    }
+
+    public class SomeResponseObject
+    {
+        public string SomeAttribute { get; set; }
     }
 }

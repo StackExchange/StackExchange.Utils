@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -68,6 +69,14 @@ namespace StackExchange.Utils
                         if (!response.IsSuccessStatusCode && !builder.Inner.IgnoredResponseStatuses.Contains(response.StatusCode))
                         {
                             exception = new HttpClientException($"Response code was {(int)response.StatusCode} ({response.StatusCode}) from {response.RequestMessage.RequestUri}: {response.ReasonPhrase}", response.StatusCode, response.RequestMessage.RequestUri);
+                            
+                            if (builder.Inner.LogErrorResponseBodyStatuses.Contains(response.StatusCode))
+                            {
+                                using var responseStream = await response.Content.ReadAsStreamAsync();
+                                using var streamReader = new StreamReader(responseStream);
+                                exception.AddLoggedData("Response.Body", await streamReader.ReadToEndAsync());
+                            }
+                            
                             stackTraceString.SetValue(exception, new StackTrace(true).ToString());
                         }
                         else

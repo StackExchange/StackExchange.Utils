@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="HttpMock" Version="2.3.1" />
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
     <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <ProjectReference Include="../../src/StackExchange.Utils.Http/StackExchange.Utils.Http.csproj" />

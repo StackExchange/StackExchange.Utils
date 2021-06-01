@@ -92,6 +92,18 @@ namespace StackExchange.Utils
         }
 
         /// <summary>
+        /// Logs error response body as part of the httpClientException data when the response's HTTP status code is any of the <paramref name="statusCodes"/>.
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="statusCodes">HTTP error status codes to log for.</param>
+        /// <returns>The request builder for chaining.</returns>
+        public static IRequestBuilder WithErrorResponseBodyLogging(this IRequestBuilder builder, params HttpStatusCode[] statusCodes)
+        {
+            builder.LogErrorResponseBodyStatuses = statusCodes;
+            return builder;
+        }
+
+        /// <summary>
         /// Adds an event handler for this request, for appending additional information to the logged exception for example.
         /// </summary>
         /// <param name="builder">The builder we're working on.</param>

@@ -30,6 +30,12 @@ namespace StackExchange.Utils
         bool LogErrors { get; set; }
 
         /// <summary>
+        /// Whether to log error response body on a given http status code.
+        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        IEnumerable<HttpStatusCode> LogErrorResponseBodyStatuses { get; set; }
+        
+        /// <summary>
         /// Which <see cref="HttpStatusCode"/>s to ignore as errors on responses.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]

@@ -13,6 +13,7 @@ namespace StackExchange.Utils
         public HttpRequestMessage Message { get; }
         public bool LogErrors { get; set; } = true;
         public IEnumerable<HttpStatusCode> IgnoredResponseStatuses { get; set; } = Enumerable.Empty<HttpStatusCode>();
+        public IEnumerable<HttpStatusCode> LogErrorResponseBodyStatuses { get; set; } = Enumerable.Empty<HttpStatusCode>();
         public TimeSpan Timeout { get; set; }
         public IWebProxy Proxy { get; set; }
         public bool BufferResponse { get; set; } = true;

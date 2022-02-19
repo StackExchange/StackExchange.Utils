@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,14 +12,14 @@ using Xunit.Abstractions;
 
 namespace StackExchange.Utils.Tests
 {
-    public class Http2Tests : IClassFixture<Http2Tests.Http2Server>
+    public class Http2Tests : IAsyncLifetime
     {
         private readonly Http2Server _server;
         private readonly ITestOutputHelper _log;
         private void Log(string message) => _log.WriteLine(message);
-        public Http2Tests(ITestOutputHelper log, Http2Server server)
+        public Http2Tests(ITestOutputHelper log)
         {
-            _server = server ?? throw new ArgumentNullException(nameof(server));
+            _server = new Http2Server();
             _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
@@ -66,10 +65,11 @@ namespace StackExchange.Utils.Tests
         [InlineData(HttpProtocols.Http1AndHttp2, true, false, "2.0", "2.0", "HTTP/2")]
         public async Task UsesVersion(HttpProtocols protocols, bool tls, bool allowUnencryptedHttp2, string specified, string expectedVersion, string expectedResponse, bool failure = false)
         { 
-            // wheeee, MacOS doesn't support ALPN so it can't do HTTP/2 over TLS
-            // skip the test if that's what we're trying to test
+            // wheeee, macOS doesn't support ALPN so it can't do HTTP/2 over TLS
+            // it also misbehaves when requesting HTTP/2 over non-TLS
+            // so let's skip all those tests on macOS.
             Skip.If(
-                RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && tls && (protocols == HttpProtocols.Http2 || protocols == HttpProtocols.Http1AndHttp2) && specified == "2.0",
+                RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && (protocols == HttpProtocols.Http2 || protocols == HttpProtocols.Http1AndHttp2) && specified == "2.0",
                 "HTTP/2 over TLS is not currently supported on MacOS"
             );
             
@@ -122,7 +122,7 @@ namespace StackExchange.Utils.Tests
             }
         }
 
-        public class Http2Server : IDisposable
+        public class Http2Server : IAsyncDisposable
         {
             private readonly IWebHost _host;
 
@@ -139,7 +139,6 @@ namespace StackExchange.Utils.Tests
                 };
                 return $"{(tls ? "https" : "http")}://localhost:{_ports[index]}/";
             }
-            public Task WaitForShutdownAsync() => _host.WaitForShutdownAsync();
 
             public Http2Server()
             {
@@ -162,11 +161,16 @@ namespace StackExchange.Utils.Tests
                             listenOptions.Protocols = HttpProtocols.Http1;
                             listenOptions.UseHttps("certificate.pfx", "password");
                         });
-                        options.ListenLocalhost(_ports[4], listenOptions =>
+
+                        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                         {
-                            listenOptions.Protocols = HttpProtocols.Http2;
-                            listenOptions.UseHttps("certificate.pfx", "password");
-                        });
+                            options.ListenLocalhost(_ports[4], listenOptions =>
+                            {
+                                listenOptions.Protocols = HttpProtocols.Http2;
+                                listenOptions.UseHttps("certificate.pfx", "password");
+                            });
+                        }
+                        
                         options.ListenLocalhost(_ports[5], listenOptions =>
                         {
                             listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
@@ -176,22 +180,14 @@ namespace StackExchange.Utils.Tests
                     .Configure(app => {
                         app.Run(context => context.Response.WriteAsync(context.Request.Protocol));
                     })
-                    .Build();
-                var t = _host.RunAsync();
-                // rudimentary check for failure
-                // this is usually down to something like a certificate failure
-                for (var i = 0; i < 5; i++)
-                {
-                    Thread.Sleep(100);
-                    if (t.IsFaulted)
-                    {
-                        // this will cause the task to throw the exception
-                        t.Wait();
-                    }
-                }
+                    .Build(); 
             }
-            void IDisposable.Dispose()
-                => _ = _host.StopAsync();
+
+            public Task StartAsync() => _host.StartAsync();
+            public ValueTask DisposeAsync() => new(_host.StopAsync());
         }
+
+        public Task InitializeAsync() => _server.StartAsync();
+        public async Task DisposeAsync() => await _server.DisposeAsync();
     }
 }

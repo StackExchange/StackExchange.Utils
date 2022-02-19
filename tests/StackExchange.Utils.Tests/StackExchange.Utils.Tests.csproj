@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.2.0" />
     <ProjectReference Include="../../src/StackExchange.Utils.Http/StackExchange.Utils.Http.csproj" />
     <ProjectReference Include="../../src/StackExchange.Utils.Configuration/StackExchange.Utils.Configuration.csproj" />
   </ItemGroup>

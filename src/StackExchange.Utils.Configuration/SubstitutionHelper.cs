@@ -14,11 +14,11 @@ namespace StackExchange.Utils
     {
         // matches a key wrapped in braces and prefixed with a '$' 
         // e.g. ${Key} or ${Section:Key} or ${Section:NestedSection:Key}
-        private static readonly Regex _substitutionPattern = new Regex(
+        private static readonly Regex _substitutionPattern = new(
             @"\$\{(?<key>[^\s]+?)\}", RegexOptions.Compiled
         );
-
-        private static readonly AsyncLocal<ICycleDetector> _cycleDetector = new AsyncLocal<ICycleDetector>();
+        
+        private static readonly ThreadLocal<ICycleDetector> _cycleDetector = new();
 
         /// <summary>
         /// Replaces substitution placeholders in a value from configuration
@@ -137,7 +137,7 @@ namespace StackExchange.Utils
         
         private class CycleDetector : ICycleDetector
         {
-            private readonly HashSet<string> _values = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            private readonly HashSet<string> _values = new(StringComparer.OrdinalIgnoreCase);
 
             public void Add(string key) => _values.Add(key);
 

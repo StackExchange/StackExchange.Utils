@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Xunit;
 
@@ -267,6 +268,51 @@ namespace StackExchange.Utils.Tests
 
             Assert.Equal("Value", configuration["Key"]);
             Assert.Equal("NewValue", configuration["NewKey"]);
+        }
+        
+
+        [Fact]
+        public async Task MultipleThreadsDoesNotThrow()
+        {
+            // access the substitution helper from a thread then fork off a couple of tasks.
+            // When AsyncLocal is used, it'll be inherited by downstream tasks
+            // and could potentially throw if the underlying CycleDetector is accessed concurrently
+            // but when ThreadLocal is used then this won't throw
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(
+                    new Dictionary<string, string>
+                    {
+                        ["Database:Username"] = "user",
+                        ["Database:Password"] = "Password1!"
+                    }
+                )
+                .WithSubstitution(
+                    c =>
+                    {
+                        c.AddInMemoryCollection(
+                            new Dictionary<string, string>
+                            {
+                                ["ConnectionStrings:Database"] = "Server=.;Database=Local.Database;User ID=${Database:Username};Password=${Database:Password}"
+                            }
+                        );
+                    })
+                .Build();
+
+            configuration.GetConnectionString("Database");
+            var tasks = new Task[100];
+            for (var i = 0; i < tasks.Length; i++)
+            {
+                tasks[i] = Task.Run(
+                    () =>
+                    {
+                        for (var j = 0; j < 10; j++)
+                        {
+                            configuration.GetConnectionString("Database");
+                        }
+                    });
+            }
+            
+            await Task.WhenAll(tasks);
         }
     }
 }

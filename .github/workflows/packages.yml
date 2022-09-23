@@ -3,7 +3,7 @@ name: Build, Test & Package
 on:
   push:
     branches:
-    - master
+    - main
     paths-ignore:
     - 'docs/**' # Don't run workflow when files are only in the /docs directory
 

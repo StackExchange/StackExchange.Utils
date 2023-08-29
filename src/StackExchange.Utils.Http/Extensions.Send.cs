@@ -24,7 +24,8 @@ namespace StackExchange.Utils
         }
 
         /// <summary>
-        /// Adds a <see cref="NameValueCollection"/> as the body for this request.
+        /// Adds a <see cref="NameValueCollection"/> as the body for this request, with a content type of
+        /// <c>multipart/form-data</c>.
         /// </summary>
         /// <param name="builder">The builder we're working on.</param>
         /// <param name="form">The <see cref="NameValueCollection"/> (e.g. FormCollection) to use.</param>
@@ -38,7 +39,17 @@ namespace StackExchange.Utils
             }
             return SendContent(builder, content);
         }
-            
+
+        /// <summary>
+        /// Adds a <see cref="NameValueCollection"/> as the body for this request, with a content type of
+        /// <c>application/x-www-form-urlencoded</c>.
+        /// </summary>
+        /// <param name="builder">The builder we're working on.</param>
+        /// <param name="form">The <see cref="NameValueCollection"/> (e.g. FormCollection) to use.</param>
+        /// <returns>The request builder for chaining.</returns>
+        public static IRequestBuilder SendFormUrlEncoded(this IRequestBuilder builder, NameValueCollection form) =>
+            SendContent(builder, new FormUrlEncodedContent(form.AllKeys.ToDictionary(k => k, v => form[v])));
+
         /// <summary>
         /// Adds raw HTML content as the body for this request.
         /// </summary>

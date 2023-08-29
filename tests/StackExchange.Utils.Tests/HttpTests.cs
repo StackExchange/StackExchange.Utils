@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -142,7 +143,7 @@ namespace StackExchange.Utils.Tests
         public async Task AddHeaderWithoutValidation()
         {
             var result = await Http.Request("https://httpbin.org/bearer")
-                                   .AddHeaderWithoutValidation("Authorization","abcd")
+                                   .AddHeaderWithoutValidation("Authorization", "abcd")
                                    .ExpectJson<HttpBinResponse>()
                                    .GetAsync();
             Assert.True(result.RawRequest.Headers.Contains("Authorization"));
@@ -162,7 +163,7 @@ namespace StackExchange.Utils.Tests
                 .ExpectJson<HttpBinResponse>()
                 .GetAsync();
 
-            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal("Test", result.Data.Headers["Custom"]);
             // Content-Type should be present because we're sending a body up
             Assert.StartsWith("application/json", result.Data.Headers["Content-Type"]);
@@ -181,7 +182,7 @@ namespace StackExchange.Utils.Tests
                 .ExpectJson<HttpBinResponse>()
                 .GetAsync();
 
-            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal("Test", result.Data.Headers["Custom"]);
             Assert.Equal("application/json; charset=utf-8", result.Data.Headers["Content-Type"]);
         }
@@ -198,7 +199,7 @@ namespace StackExchange.Utils.Tests
                 .ExpectJson<HttpBinResponse>()
                 .GetAsync();
 
-            Assert.Equal(HttpStatusCode.OK,result.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             Assert.Equal("Test", result.Data.Headers["Custom"]);
             // Content-Type is NOT sent when there's no body - this is correct behavior
             Assert.DoesNotContain("Content-Type", result.Data.Headers.Keys);
@@ -222,13 +223,59 @@ namespace StackExchange.Utils.Tests
         }
 
         [Fact]
+        public async Task SendFormUsesMultipartFormData()
+        {
+            string expectedFormKey = "key";
+            string expectedFormValue = "value";
+            var form = new NameValueCollection
+            {
+                [expectedFormKey] = expectedFormValue
+            };
+            var result = await Http.Request("https://httpbin.org/post")
+                .SendForm(form)
+                .ExpectJson<HttpBinResponse>()
+                .PostAsync();
+
+            Assert.NotNull(result);
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var actualContentType = Assert.Contains("Content-Type", (IDictionary<string, string>)result.Data.Headers);
+            Assert.StartsWith("multipart/form-data;", actualContentType);
+            var actualFormValue = Assert.Contains(expectedFormKey, (IDictionary<string, string>)result.Data.Form);
+            Assert.Equal(expectedFormValue, actualFormValue);
+        }
+
+        [Fact]
+        public async Task SendFormUrlEncodedUsesFormDataUrlEncoded()
+        {
+            string expectedFormKey = "key";
+            string expectedFormValue = "value";
+            var form = new NameValueCollection
+            {
+                [expectedFormKey] = expectedFormValue
+            };
+            var result = await Http.Request("https://httpbin.org/post")
+                .SendFormUrlEncoded(form)
+                .ExpectJson<HttpBinResponse>()
+                .PostAsync();
+
+            Assert.NotNull(result);
+            Assert.True(result.Success);
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var actualContentType = Assert.Contains("Content-Type", (IDictionary<string, string>)result.Data.Headers);
+            Assert.Equal("application/x-www-form-urlencoded", actualContentType);
+            var actualFormValue = Assert.Contains(expectedFormKey, (IDictionary<string, string>)result.Data.Form);
+            Assert.Equal(expectedFormValue, actualFormValue);
+        }
+
+        [Fact]
         public async Task LargePost()
         {
             // 5MB string
             var myString = new string('*', 1048576 * 5);
 
             var form = new System.Collections.Specialized.NameValueCollection
-            {                
+            {
                 ["requestsJson"] = myString
             };
 
